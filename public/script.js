@@ -1,4 +1,4 @@
-const API_KEY = process.env.GEMINI_API_KEY || 'YOUR_API_KEY';
+const API_KEY = 'AIzaSyBya-gL9tn8Gp5Tl5Rzg3Dk5ke2yzWeGjY';
 const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 const VALID_EQUATION_CONFIDENCE = 0.7;
 const FUNNY_MESSAGES = [
