@@ -1,0 +1,537 @@
+:root {
+    --neon-blue: #00fff9;
+    --neon-pink: #ff00ff;
+    --cyber-black: #1a1a1a;
+    --cyber-dark: #2a2a2a;
+    --cyber-text: #e0e0e0;
+    --cyber-green: #00ff66;
+    --cyber-yellow: #ffcc00;
+}
+
+/* Animated background */
+body {
+    font-family: 'Orbitron', sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background-color: var(--cyber-black);
+    color: var(--cyber-text);
+    position: relative;
+    overflow-x: hidden;
+}
+
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(90deg, transparent 0%, rgba(0, 255, 249, 0.1) 50%, transparent 100%);
+    animation: scanline 8s linear infinite;
+    pointer-events: none;
+    z-index: -1;
+}
+
+@keyframes scanline {
+    0% { transform: translateX(-100%); }
+    100% { transform: translateX(100%); }
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: rgba(42, 42, 42, 0.95);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 
+        0 0 20px rgba(0, 255, 249, 0.2),
+        inset 0 0 20px rgba(0, 255, 249, 0.1);
+    border: 1px solid var(--neon-blue);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.container:hover {
+    box-shadow: 
+        0 0 30px rgba(0, 255, 249, 0.3),
+        inset 0 0 30px rgba(0, 255, 249, 0.2);
+}
+
+/* Enhanced header */
+.cyber-header {
+    text-align: center;
+    margin-bottom: 40px;
+    position: relative;
+}
+
+.cyber-header h1 {
+    color: var(--neon-blue);
+    text-shadow: 
+        0 0 10px var(--neon-blue),
+        0 0 20px var(--neon-blue);
+    margin: 0;
+    font-size: 2.5em;
+    letter-spacing: 2px;
+    animation: glow 2s ease-in-out infinite alternate;
+}
+
+@keyframes glow {
+    from { text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--neon-blue); }
+    to { text-shadow: 0 0 15px var(--neon-blue), 0 0 30px var(--neon-blue); }
+}
+
+.cyber-line {
+    height: 2px;
+    background: linear-gradient(90deg, 
+        transparent, 
+        var(--neon-blue), 
+        var(--neon-pink),
+        var(--neon-blue), 
+        transparent
+    );
+    margin: 20px auto;
+    max-width: 60%;
+    animation: lineShift 3s ease-in-out infinite;
+}
+
+@keyframes lineShift {
+    0% { background-position: -200% 0; }
+    100% { background-position: 300% 0; }
+}
+
+/* Improved control panel */
+.control-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    border: 1px solid rgba(0, 255, 249, 0.2);
+}
+
+.language-select {
+    position: relative;
+    z-index: 1;
+}
+
+.cyber-select {
+    background-color: var(--cyber-dark);
+    color: var(--cyber-text);
+    border: 1px solid var(--neon-blue);
+    padding: 10px 15px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 30px;
+    background-image: linear-gradient(45deg, transparent 50%, var(--neon-blue) 50%),
+                      linear-gradient(135deg, var(--neon-blue) 50%, transparent 50%);
+    background-position: 
+        calc(100% - 15px) calc(1em + 2px),
+        calc(100% - 10px) calc(1em + 2px);
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+}
+
+.cyber-select:hover, .cyber-select:focus {
+    border-color: var(--neon-pink);
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+}
+
+/* Enhanced file input */
+.upload-section {
+    position: relative;
+}
+
+.cyber-file {
+    display: none;
+}
+
+.file-label {
+    display: inline-block;
+    padding: 10px 20px;
+    background: var(--cyber-dark);
+    border: 1px solid var(--neon-blue);
+    border-radius: 4px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 10px;
+}
+
+.file-label:hover {
+    border-color: var(--neon-pink);
+    box-shadow: 0 0 15px rgba(255, 0, 255, 0.3);
+}
+
+.cyber-button {
+    background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink));
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-family: 'Orbitron', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(0, 255, 249, 0.3);
+    position: relative;
+    overflow: hidden;
+}
+
+.cyber-button::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 255, 255, 0.1),
+        transparent
+    );
+    transform: rotate(45deg);
+    animation: buttonGlow 2s linear infinite;
+}
+
+@keyframes buttonGlow {
+    0% { transform: rotate(45deg) translateX(-100%); }
+    100% { transform: rotate(45deg) translateX(100%); }
+}
+
+/* Preview section improvements */
+.preview-section {
+    position: relative;
+    margin: 30px 0;
+    text-align: center;
+}
+
+.preview-section img {
+    max-width: 100%;
+    margin: 0 auto;
+    border: 2px solid var(--neon-blue);
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    filter: brightness(1.1) contrast(1.1);
+}
+
+.preview-section img:hover {
+    transform: scale(1.02);
+    box-shadow: 0 0 20px rgba(0, 255, 249, 0.4);
+}
+
+/* Result section enhancements */
+.result-section {
+    margin-top: 30px;
+    padding: 25px;
+    background-color: rgba(42, 42, 42, 0.8);
+    border-radius: 8px;
+    border: 1px solid var(--neon-pink);
+    position: relative;
+    overflow: hidden;
+}
+
+.cyber-loading {
+    text-align: center;
+    color: var(--neon-blue);
+    padding: 20px;
+}
+
+.loader {
+    display: inline-block;
+    width: 30px;
+    height: 30px;
+    border: 3px solid var(--neon-blue);
+    border-radius: 50%;
+    border-top-color: transparent;
+    animation: spin 1s linear infinite;
+    margin-right: 15px;
+    box-shadow: 0 0 15px rgba(0, 255, 249, 0.3);
+}
+
+.cyber-solution {
+    line-height: 1.8;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+}
+
+/* Difficulty indicators */
+.difficulty-easy {
+    color: var(--cyber-green);
+    font-size: 0.9em;
+    margin-bottom: 15px;
+    padding: 5px 10px;
+    background: rgba(0, 255, 102, 0.1);
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.difficulty-medium {
+    color: var(--cyber-yellow);
+    font-size: 0.9em;
+    margin-bottom: 15px;
+    padding: 5px 10px;
+    background: rgba(255, 204, 0, 0.1);
+    border-radius: 4px;
+    display: inline-block;
+}
+
+.difficulty-hard {
+    color: var(--neon-pink);
+    font-size: 0.9em;
+    margin-bottom: 15px;
+    padding: 5px 10px;
+    background: rgba(255, 0, 255, 0.1);
+    border-radius: 4px;
+    display: inline-block;
+}
+
+/* Mathematical terms styling */
+.math {
+    font-family: 'Courier New', monospace;
+    color: var(--neon-pink);
+    background-color: rgba(255, 0, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-size: 0.9em;
+    border: 1px solid rgba(255, 0, 255, 0.2);
+    display: inline-block;
+    margin: 0 2px;
+}
+
+/* Responsive design improvements */
+@media (max-width: 768px) {
+    .control-panel {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .language-select, .upload-section {
+        width: 100%;
+    }
+    
+    .cyber-button {
+        width: 100%;
+        margin-top: 10px;
+    }
+} 
+
+/* Theme variables */
+.theme-industrial {
+    --industrial-primary: #ff3d00;
+    --industrial-secondary: #424242;
+    --industrial-dark: #1a1a1a;
+    --industrial-light: #757575;
+    --industrial-accent: #ffd700;
+    --industrial-text: #e0e0e0;
+    --industrial-border: #333333;
+    --industrial-shadow: 0 2px 8px rgba(255, 61, 0, 0.2);
+    --industrial-pattern: repeating-linear-gradient(
+        45deg,
+        var(--industrial-dark) 0px,
+        var(--industrial-dark) 10px,
+        var(--industrial-secondary) 10px,
+        var(--industrial-secondary) 11px
+    );
+}
+
+/* Industrial theme overrides */
+.theme-industrial .container {
+    background-color: var(--industrial-dark);
+    background-image: var(--industrial-pattern);
+    border: 2px solid var(--industrial-border);
+    box-shadow: var(--industrial-shadow);
+    position: relative;
+}
+
+.theme-industrial .container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, 
+        var(--industrial-primary),
+        var(--industrial-accent),
+        var(--industrial-primary)
+    );
+}
+
+.theme-industrial .cyber-header h1 {
+    color: var(--industrial-primary);
+    text-shadow: 0 0 10px var(--industrial-primary);
+    position: relative;
+    padding: 10px 0;
+}
+
+.theme-industrial .cyber-header h1::before,
+.theme-industrial .cyber-header h1::after {
+    content: '⚠';
+    color: var(--industrial-accent);
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 0.8em;
+}
+
+.theme-industrial .cyber-header h1::before {
+    left: -30px;
+}
+
+.theme-industrial .cyber-header h1::after {
+    right: -30px;
+}
+
+.theme-industrial .cyber-line {
+    background: linear-gradient(90deg,
+        transparent,
+        var(--industrial-primary),
+        var(--industrial-accent),
+        var(--industrial-primary),
+        transparent
+    );
+    height: 3px;
+}
+
+.theme-industrial .cyber-button {
+    background: var(--industrial-secondary);
+    border: 2px solid var(--industrial-primary);
+    color: var(--industrial-text);
+    position: relative;
+    overflow: hidden;
+}
+
+.theme-industrial .cyber-button::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        45deg,
+        transparent,
+        rgba(255, 61, 0, 0.2),
+        transparent
+    );
+    transform: rotate(45deg);
+    animation: industrialGlow 2s linear infinite;
+}
+
+.theme-industrial .cyber-button:hover {
+    background: var(--industrial-primary);
+    color: var(--industrial-dark);
+}
+
+.theme-industrial .cyber-select {
+    background-color: var(--industrial-secondary);
+    border: 2px solid var(--industrial-primary);
+    color: var(--industrial-text);
+}
+
+.theme-industrial .preview-section img {
+    border: 2px solid var(--industrial-primary);
+    box-shadow: 0 0 15px rgba(255, 61, 0, 0.3);
+}
+
+.theme-industrial .result-section {
+    background-color: rgba(26, 26, 26, 0.9);
+    border: 2px solid var(--industrial-primary);
+    position: relative;
+}
+
+.theme-industrial .result-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 10px,
+        rgba(255, 61, 0, 0.05) 10px,
+        rgba(255, 61, 0, 0.05) 11px
+    );
+    pointer-events: none;
+}
+
+.theme-industrial .math {
+    color: var(--industrial-accent);
+    background-color: rgba(255, 215, 0, 0.1);
+    border: 1px solid var(--industrial-accent);
+}
+
+@keyframes industrialGlow {
+    0% { transform: rotate(45deg) translateX(-100%); }
+    100% { transform: rotate(45deg) translateX(100%); }
+}
+
+/* Update mobile styles for industrial theme */
+@media (max-width: 768px) {
+    .theme-industrial .container {
+        border-width: 0 2px;
+    }
+    
+    .theme-industrial .mobile-controls {
+        background: var(--industrial-dark);
+        border-top: 2px solid var(--industrial-primary);
+    }
+}
+
+/* Add these styles to your existing CSS */
+.input-methods {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.cyber-button.secondary {
+    background: var(--cyber-dark);
+    border: 1px solid var(--neon-blue);
+}
+
+.cyber-button.secondary:hover {
+    border-color: var(--neon-pink);
+}
+
+.cyber-button .icon {
+    margin-right: 8px;
+}
+
+.cyber-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+    .input-methods {
+        flex-direction: row;
+        width: 100%;
+    }
+
+    .input-methods .cyber-button {
+        flex: 1;
+        padding: 15px;
+    }
+
+    .button-text {
+        display: none;
+    }
+
+    .cyber-button .icon {
+        margin: 0;
+        font-size: 1.5em;
+    }
+} 
