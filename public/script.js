@@ -79,64 +79,54 @@ async function solveEquation() {
         }
 
         const promptText = language === 'french' 
-            ? `Tu es un professeur de mathématiques résolvant une équation.
+            ? `Résous cette équation mathématique de manière structurée.
 
-                FORMAT DE LA SOLUTION:
+                RÈGLES:
+                1. Première ligne: "Équation: [équation]"
+                2. Deuxième ligne: "Niveau: [Facile/Moyen/Difficile]"
+                3. Ensuite, résous étape par étape:
+                   • Une équation par ligne
+                   • Numérote chaque étape
+                   • Ajoute une brève explication
+                4. Termine par "Solution: x = [valeur]"
 
-                1. Commence par "Niveau: (Facile/Moyen/Difficile)"
+                Format pour chaque étape:
+                [numéro]. [équation]    | [explication]
 
-                2. Écris l'équation initiale sur une nouvelle ligne
-
-                3. Pour chaque étape de résolution:
-                   - Commence une nouvelle ligne
-                   - Montre l'équation complète
-                   - Mets une flèche (→) au début de la ligne
-                   - Ajoute l'explication entre parenthèses à la fin
-
-                4. Pour la réponse finale:
-                   - Commence une nouvelle ligne
-                   - Écris "∴" (donc) suivi de la solution
-                   - Souligne la réponse finale
-
-                EXEMPLE:
+                Exemple:
+                Équation: 2x + 4 = 10
                 Niveau: Facile
-                2x + 4 = 10
 
-                → 2x = 10 - 4    (soustraction)
-                → 2x = 6         (simplification)
-                → x = 3          (division par 2)
-                ∴ x = 3          (solution finale)
+                1. 2x + 4 = 10         | Équation initiale
+                2. 2x = 10 - 4         | Soustraction de 4
+                3. 2x = 6              | Simplification
+                4. x = 3               | Division par 2
 
-                Résous cette équation:`
-            : `You are a math teacher solving an equation.
+                Solution: x = 3`
+            : `Solve this mathematical equation in a structured way.
 
-                SOLUTION FORMAT:
+                RULES:
+                1. First line: "Equation: [equation]"
+                2. Second line: "Level: [Easy/Medium/Hard]"
+                3. Then solve step by step:
+                   • One equation per line
+                   • Number each step
+                   • Add brief explanation
+                4. End with "Solution: x = [value]"
 
-                1. Start with "Level: (Easy/Medium/Hard)"
+                Format for each step:
+                [number]. [equation]    | [explanation]
 
-                2. Write the initial equation on a new line
-
-                3. For each solving step:
-                   - Start a new line
-                   - Show the complete equation
-                   - Put an arrow (→) at the start of the line
-                   - Add explanation in parentheses at the end
-
-                4. For the final answer:
-                   - Start a new line
-                   - Write "∴" (therefore) followed by the solution
-                   - Underline the final answer
-
-                EXAMPLE:
+                Example:
+                Equation: 2x + 4 = 10
                 Level: Easy
-                2x + 4 = 10
 
-                → 2x = 10 - 4    (subtraction)
-                → 2x = 6         (simplification)
-                → x = 3          (division by 2)
-                ∴ x = 3          (final solution)
+                1. 2x + 4 = 10         | Initial equation
+                2. 2x = 10 - 4         | Subtract 4
+                3. 2x = 6              | Simplify
+                4. x = 3               | Divide by 2
 
-                Solve this equation:`;
+                Solution: x = 3`;
 
         const generationConfig = {
             temperature: 0.1,
@@ -339,46 +329,38 @@ async function verifyEquationImage(base64Image) {
 
 // Update the solution formatting
 function formatSolution(solutionText) {
-    // Remove <math> tags
-    solutionText = solutionText.replace(/<\/?math>/g, '');
+    // Remove any HTML or math tags
+    solutionText = solutionText.replace(/<[^>]*>/g, '');
     
-    // Clean up the formatting
-    solutionText = solutionText
-        .replace(/\*\*/g, '')
-        .replace(/xx.*?xx/g, '')
-        .replace(/solving the equation/gi, '')
-        .replace(/\s+/g, ' ')
-        .replace(/Therefore,/g, '→')
-        .replace(/Thus,/g, '→')
-        .trim();
-
-    // Add proper line breaks and spacing
-    solutionText = solutionText
-        .replace(/(\d+\))/g, '\n$1')  // Add line break before numbered steps
-        .replace(/→/g, '\n→')         // Add line break before arrows
-        .replace(/Level:/g, '\nLevel:')
-        .replace(/Solution:/g, '\nSolution:')
-        .replace(/\n\s+/g, '\n')      // Clean up extra spaces after line breaks
-        .trim();
-
-    // Replace basic math symbols
-    const replacements = {
-        '\\*': '×',
-        '\\/': '÷',
-        '\\+-': '±',
-        'sqrt': '√',
-        '\\^2': '²',
-        '\\^3': '³',
-        '->': '→',
-        '<=': '≤',
-        '>=': '≥',
-        '!=': '≠',
-        '==': '='
-    };
-
-    Object.entries(replacements).forEach(([key, value]) => {
-        solutionText = solutionText.replace(new RegExp(key, 'g'), value);
+    // Split into lines
+    let lines = solutionText.split('\n').map(line => line.trim()).filter(line => line);
+    
+    // Format the solution with proper HTML structure
+    let formattedHtml = '<div class="solution-container">';
+    
+    // Process each line
+    lines.forEach(line => {
+        if (line.startsWith('Equation:') || line.startsWith('Équation:')) {
+            formattedHtml += `<div class="equation-initial">${line}</div>`;
+        }
+        else if (line.startsWith('Level:') || line.startsWith('Niveau:')) {
+            formattedHtml += `<div class="difficulty-label">${line}</div>`;
+        }
+        else if (line.startsWith('Solution:')) {
+            formattedHtml += `<div class="final-solution">${line}</div>`;
+        }
+        else if (line.match(/^\d+\./)) {
+            // Split step into equation and explanation
+            let [step, explanation] = line.split('|').map(part => part.trim());
+            formattedHtml += `
+                <div class="solution-step">
+                    <div class="step-number">${step.split('.')[0]}</div>
+                    <div class="step-equation">${step.split('.')[1]}</div>
+                    <div class="step-explanation">${explanation || ''}</div>
+                </div>`;
+        }
     });
-
-    return solutionText;
+    
+    formattedHtml += '</div>';
+    return formattedHtml;
 } 
