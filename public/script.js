@@ -79,54 +79,57 @@ async function solveEquation() {
         }
 
         const promptText = language === 'french' 
-            ? `Tu es un expert en mathématiques qui parle français, capable de comprendre les équations manuscrites et tapées.
-                Analyse d'abord la difficulté de l'équation (facile/moyen/difficile).
+            ? `Tu es un expert en mathématiques spécialisé dans l'interprétation d'équations manuscrites.
 
-                RÈGLES DE RÉPONSE:
-                - Pour une équation FACILE:
-                  * Indique "Niveau: Facile"
-                  * Donne uniquement les étapes essentielles
-                  * Maximum 3 étapes
-                  * Sois direct et concis
-                  * Pas d'explications détaillées
+                ÉTAPES D'ANALYSE:
+                1. TRANSCRIPTION:
+                   * Examine attentivement chaque symbole
+                   * Liste tous les symboles que tu vois (nombres, variables, opérateurs)
+                   * Réécris l'équation complète en format texte
+                   * Confirme ta transcription
 
-                - Pour une équation MOYENNE ou DIFFICILE:
-                  * Indique le niveau approprié
-                  * Fournis des explications détaillées
-                  * Explique chaque étape
-                  * Ajoute des clarifications si nécessaire
+                2. VÉRIFICATION:
+                   * Vérifie si x, y, z sont des variables
+                   * Distingue entre 1 et l, 0 et O, 7 et t
+                   * Confirme les opérateurs (+, -, ×, ÷, =, etc.)
+                   * Indique toute ambiguïté
 
-                Si l'écriture est difficile à lire:
-                1. Commence par réécrire l'équation clairement
-                2. Confirme si ta transcription est correcte
-                3. Puis résous l'équation
+                3. RÉSOLUTION:
+                   * Indique le niveau (facile/moyen/difficile)
+                   * Pour niveau facile: 3 étapes maximum
+                   * Pour niveau moyen/difficile: explications détaillées
 
-                Utilise <math> pour encadrer les termes mathématiques.
-                Voici l'équation à résoudre:`
-            : `You are a mathematics expert capable of understanding both handwritten and typed equations.
-                First analyze the difficulty of the equation (easy/medium/hard).
+                Utilise <math> pour les expressions mathématiques.
+                Voici l'équation à analyser:`
+            : `You are a mathematics expert specialized in interpreting handwritten equations.
 
-                RESPONSE RULES:
-                - For an EASY equation:
-                  * Indicate "Level: Easy"
-                  * Provide only essential steps
-                  * Maximum 3 steps
-                  * Be direct and concise
-                  * No detailed explanations
+                ANALYSIS STEPS:
+                1. TRANSCRIPTION:
+                   * Carefully examine each symbol
+                   * List all symbols you see (numbers, variables, operators)
+                   * Rewrite the complete equation in text format
+                   * Confirm your transcription
 
-                - For a MEDIUM or HARD equation:
-                  * Indicate appropriate level
-                  * Provide detailed explanations
-                  * Explain each step
-                  * Add clarifications when needed
+                2. VERIFICATION:
+                   * Check if x, y, z are variables
+                   * Distinguish between 1 and l, 0 and O, 7 and t
+                   * Confirm operators (+, -, ×, ÷, =, etc.)
+                   * Note any ambiguity
 
-                If the handwriting is difficult to read:
-                1. Start by clearly rewriting the equation
-                2. Confirm if your transcription is correct
-                3. Then solve the equation
+                3. SOLUTION:
+                   * Indicate level (easy/medium/hard)
+                   * For easy level: 3 steps maximum
+                   * For medium/hard level: detailed explanations
 
-                Use <math> tags around mathematical terms.
-                Here's the equation to solve:`;
+                Use <math> tags for mathematical expressions.
+                Here's the equation to analyze:`;
+
+        const generationConfig = {
+            temperature: 0.2,
+            topK: 40,
+            topP: 0.95,
+            maxOutputTokens: 2048,
+        };
 
         const response = await fetch(`${API_URL}?key=${API_KEY}`, {
             method: 'POST',
@@ -144,12 +147,11 @@ async function solveEquation() {
                         }
                     }]
                 }],
-                generationConfig: {
-                    temperature: 0.4,
-                    topK: 32,
-                    topP: 1,
-                    maxOutputTokens: 2048,
-                }
+                generationConfig: generationConfig,
+                safetySettings: [{
+                    category: "HARM_CATEGORY_DANGEROUS",
+                    threshold: "BLOCK_NONE"
+                }]
             })
         });
 
