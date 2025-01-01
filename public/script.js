@@ -43,6 +43,24 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize other features
     setupMobilePreview();
     updateUILanguage(document.getElementById('language').value);
+
+    // Ajouter l'event listener pour le bouton de soumission de correction
+    document.getElementById('submitCorrection').addEventListener('click', () => {
+        const correctedEquation = document.getElementById('equationInput').value.trim();
+        if (correctedEquation) {
+            solveDetectedEquation(correctedEquation);
+        }
+    });
+
+    // Ajouter l'event listener pour la touche Enter dans le champ de texte
+    document.getElementById('equationInput').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            const correctedEquation = e.target.value.trim();
+            if (correctedEquation) {
+                solveDetectedEquation(correctedEquation);
+            }
+        }
+    });
 });
 
 document.getElementById('imageInput').addEventListener('change', handleImageSelect);
@@ -346,38 +364,29 @@ async function verifyEquationImage(base64Image) {
 
 // Update the solution formatting
 function formatSolution(solutionText) {
-    // Remove any HTML or math tags
+    // Nettoyer le texte
     solutionText = solutionText.replace(/<[^>]*>/g, '');
     
-    // Split into lines and clean them
-    let lines = solutionText.split('\n')
-        .map(line => line.trim())
-        .filter(line => line);
-    
-    // Format the solution with proper HTML structure
     let formattedHtml = '<div class="solution-container">';
     
-    let isEquation = true; // Toggle between equation and explanation
+    // Séparer les lignes
+    const lines = solutionText.split('\n').map(line => line.trim()).filter(line => line);
     
     lines.forEach(line => {
-        if (line.startsWith('Equation:') || line.startsWith('Équation:')) {
-            formattedHtml += `<div class="equation-header">${line}</div>`;
-        }
-        else if (line.startsWith('Level:') || line.startsWith('Niveau:')) {
+        if (line.startsWith('Level:') || line.startsWith('Niveau:')) {
             formattedHtml += `<div class="difficulty-label">${line}</div>`;
         }
-        else if (line.startsWith('Solution:')) {
-            formattedHtml += `<div class="final-solution">${line}</div>`;
-        }
-        else {
-            if (isEquation) {
-                formattedHtml += `<div class="step-container">
-                    <div class="step-equation">${line}</div>`;
-            } else {
-                formattedHtml += `<div class="step-explanation">${line}</div>
+        else if (line.includes('→') || line.includes('∴')) {
+            // Séparer l'équation et l'explication
+            const [equation, explanation] = line.split('(').map(part => part.trim());
+            formattedHtml += `
+                <div class="step-container">
+                    <div class="step-equation">${equation}</div>
+                    <div class="step-explanation">(${explanation || ''}</div>
                 </div>`;
-            }
-            isEquation = !isEquation;
+        }
+        else if (!line.startsWith('FORMAT:') && !line.startsWith('EXEMPLE:')) {
+            formattedHtml += `<div class="step-equation">${line}</div>`;
         }
     });
     
