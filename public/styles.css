@@ -744,3 +744,115 @@ body::before {
         font-size: 1em;
     }
 } 
+
+/* Verification section styling */
+.verification-section {
+    background: var(--cyber-dark);
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid var(--neon-blue);
+    animation: fadeIn 0.3s ease-out;
+}
+
+.verification-container {
+    text-align: center;
+}
+
+.verification-title {
+    color: var(--neon-blue);
+    font-size: 1.2em;
+    margin-bottom: 15px;
+}
+
+.detected-equation {
+    font-family: "Courier New", monospace;
+    font-size: 1.4em;
+    padding: 15px;
+    margin: 15px 0;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 6px;
+    border-left: 3px solid var(--neon-pink);
+}
+
+.verification-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.cyber-button.confirm {
+    background: linear-gradient(45deg, var(--cyber-green), var(--neon-blue));
+}
+
+.cyber-button.edit {
+    background: linear-gradient(45deg, var(--neon-pink), var(--neon-blue));
+}
+
+.correction-container {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--neon-blue);
+    animation: slideDown 0.3s ease-out;
+}
+
+.correction-title {
+    color: var(--neon-pink);
+    font-size: 1.1em;
+    margin-bottom: 15px;
+}
+
+.correction-input-container {
+    display: flex;
+    gap: 10px;
+}
+
+.cyber-input {
+    flex: 1;
+    background: var(--cyber-dark);
+    border: 1px solid var(--neon-blue);
+    color: var(--cyber-text);
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-family: "Courier New", monospace;
+    font-size: 1.1em;
+}
+
+.cyber-input:focus {
+    outline: none;
+    border-color: var(--neon-pink);
+    box-shadow: 0 0 10px rgba(255, 0, 255, 0.2);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes slideDown {
+    from { 
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to { 
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Mobile responsiveness */
+@media (max-width: 768px) {
+    .verification-buttons {
+        flex-direction: column;
+    }
+    
+    .correction-input-container {
+        flex-direction: column;
+    }
+    
+    .cyber-input {
+        font-size: 16px;
+        padding: 12px 15px;
+    }
+} 

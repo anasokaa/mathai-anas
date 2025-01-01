@@ -11,7 +11,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="version-tag">v1.6.0</div>
+        <div class="version-tag">v1.7.0</div>
         <div class="cyber-header">
             <h1>MathAI Anas</h1>
             <div class="cyber-line"></div>
@@ -51,6 +51,23 @@
             <div id="loading" class="cyber-loading" style="display: none;">
                 <span class="loader"></span>
                 <span id="loadingText">Decoding...</span>
+            </div>
+            <div id="verificationSection" class="verification-section" style="display: none;">
+                <div class="verification-container">
+                    <h3 class="verification-title">Is this the correct equation?</h3>
+                    <div class="detected-equation"></div>
+                    <div class="verification-buttons">
+                        <button id="confirmEquation" class="cyber-button confirm">Yes, solve it</button>
+                        <button id="correctEquation" class="cyber-button edit">No, let me fix it</button>
+                    </div>
+                </div>
+                <div class="correction-container" style="display: none;">
+                    <h3 class="correction-title">Enter the correct equation:</h3>
+                    <div class="correction-input-container">
+                        <input type="text" id="equationInput" class="cyber-input" placeholder="Type the equation here...">
+                        <button id="submitCorrection" class="cyber-button confirm">Solve this instead</button>
+                    </div>
+                </div>
             </div>
             <div id="solution" class="cyber-solution"></div>
         </div>

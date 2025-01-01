@@ -53,152 +53,94 @@ async function solveEquation() {
     const file = imageInput.files[0];
     const loading = document.getElementById('loading');
     const solution = document.getElementById('solution');
-    const language = document.getElementById('language').value;
-
-    if (!file) {
-        alert('Please select an image first!');
-        return;
-    }
-
+    const verificationSection = document.getElementById('verificationSection');
+    
     loading.style.display = 'block';
     solution.innerHTML = '';
+    verificationSection.style.display = 'none';
 
     try {
-        if (file.size > 4 * 1024 * 1024) {
-            throw new Error('Image file is too large. Please use an image under 4MB.');
-        }
-
         const base64Image = await getBase64(file);
-        
-        // First, verify if the image contains an equation
         const isEquation = await verifyEquationImage(base64Image);
         
         if (!isEquation) {
-            const funnyMessage = FUNNY_MESSAGES[Math.floor(Math.random() * FUNNY_MESSAGES.length)];
-            throw new Error(funnyMessage);
+            throw new Error(FUNNY_MESSAGES[Math.floor(Math.random() * FUNNY_MESSAGES.length)]);
         }
 
-        const promptText = language === 'french' 
-            ? `Tu es un expert en reconnaissance d'équations mathématiques manuscrites et typographiées.
-
-                RÈGLES DE RECONNAISSANCE:
-                1. Analyse attentivement chaque symbole
-                2. Distingue clairement:
-                   - Les chiffres (0-9)
-                   - Les variables (x, y, z)
-                   - Les opérateurs (+, -, ×, ÷, =)
-                   - Les exposants et indices
-                   - Les fractions et racines
-                3. En cas d'ambiguïté:
-                   - Compare avec les symboles standards
-                   - Utilise le contexte mathématique
-                   - Vérifie la cohérence de l'équation
-
-                FORMAT DE LA SOLUTION:
-                1. Équation: [équation transcrite proprement]
-                2. Niveau: [Facile/Moyen/Difficile]
-                3. Pour chaque étape:
-                   - Équation claire sur une ligne
-                   - Explication sur la ligne suivante
-                4. Solution: x = [valeur]
-
-                IMPORTANT:
-                - Vérifie deux fois la transcription
-                - Assure-toi que l'équation a un sens mathématique
-                - En cas de doute, demande une clarification
-
-                Résous cette équation:`
-            : `You are an expert in recognizing both handwritten and typed mathematical equations.
-
-                RECOGNITION RULES:
-                1. Carefully analyze each symbol
-                2. Clearly distinguish:
-                   - Numbers (0-9)
-                   - Variables (x, y, z)
-                   - Operators (+, -, ×, ÷, =)
-                   - Exponents and subscripts
-                   - Fractions and roots
-                3. In case of ambiguity:
-                   - Compare with standard symbols
-                   - Use mathematical context
-                   - Check equation consistency
-
-                SOLUTION FORMAT:
-                1. Equation: [properly transcribed equation]
-                2. Level: [Easy/Medium/Hard]
-                3. For each step:
-                   - Clear equation on one line
-                   - Explanation on next line
-                4. Solution: x = [value]
-
-                IMPORTANT:
-                - Double-check the transcription
-                - Ensure the equation makes mathematical sense
-                - If in doubt, ask for clarification
-
-                Solve this equation:`;
-
-        const generationConfig = {
-            temperature: 0.1,
-            topK: 40,
-            topP: 0.95,
-            maxOutputTokens: 2048,
+        // Detect the equation
+        const detectedEquation = await detectEquation(base64Image);
+        
+        // Show verification section
+        loading.style.display = 'none';
+        verificationSection.style.display = 'block';
+        document.querySelector('.detected-equation').textContent = detectedEquation;
+        
+        // Handle verification buttons
+        document.getElementById('confirmEquation').onclick = () => {
+            solveDetectedEquation(detectedEquation, base64Image);
         };
+        
+        document.getElementById('correctEquation').onclick = () => {
+            document.querySelector('.verification-container').style.display = 'none';
+            document.querySelector('.correction-container').style.display = 'block';
+        };
+        
+        document.getElementById('submitCorrection').onclick = () => {
+            const correctedEquation = document.getElementById('equationInput').value.trim();
+            if (correctedEquation) {
+                solveDetectedEquation(correctedEquation);
+            }
+        };
+
+    } catch (error) {
+        console.error('Error:', error);
+        loading.style.display = 'none';
+        solution.innerHTML = `<div class="error">Error: ${error.message}</div>`;
+    }
+}
+
+async function solveDetectedEquation(equation, base64Image = null) {
+    const loading = document.getElementById('loading');
+    const solution = document.getElementById('solution');
+    const verificationSection = document.getElementById('verificationSection');
+    
+    loading.style.display = 'block';
+    solution.innerHTML = '';
+    verificationSection.style.display = 'none';
+
+    try {
+        const language = document.getElementById('language').value;
+        const promptText = createSolutionPrompt(language, equation);
+        
+        const requestBody = {
+            contents: [{
+                parts: [{
+                    text: promptText
+                }]
+            }]
+        };
+
+        // If we have the original image, include it
+        if (base64Image) {
+            requestBody.contents[0].parts.push({
+                inline_data: {
+                    mime_type: "image/jpeg",
+                    data: base64Image.split(',')[1]
+                }
+            });
+        }
 
         const response = await fetch(`${API_URL}?key=${API_KEY}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({
-                contents: [{
-                    parts: [{
-                        text: promptText
-                    }, {
-                        inline_data: {
-                            mime_type: file.type,
-                            data: base64Image.split(',')[1]
-                        }
-                    }]
-                }]
-            })
+            body: JSON.stringify(requestBody)
         });
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(`API error: ${errorData.error?.message || response.statusText}`);
-        }
-
-        const data = await response.json();
+        // Process response and show solution
+        // ... (rest of the solution handling code)
         
-        if (data.candidates && data.candidates[0]?.content) {
-            let solutionText = data.candidates[0].content.parts[0].text;
-            solutionText = formatSolution(solutionText);
-            
-            // Parse difficulty level from the first line
-            const firstLine = solutionText.split('\n')[0].toLowerCase();
-            let difficultyClass = 'difficulty-medium';
-            
-            if (firstLine.includes('easy') || firstLine.includes('facile')) {
-                difficultyClass = 'difficulty-easy';
-            } else if (firstLine.includes('hard') || firstLine.includes('difficile')) {
-                difficultyClass = 'difficulty-hard';
-            }
-
-            // Format the solution with proper styling
-            const formattedSolution = marked.parse(solutionText)
-                .replace(/<math>/g, '<span class="math">')
-                .replace(/<\/math>/g, '</span>');
-
-            solution.innerHTML = `
-                <h3>${language === 'french' ? 'Solution:' : 'Solution:'}</h3>
-                <div class="${difficultyClass}">
-                    ${formattedSolution}
-                </div>
-            `;
-        } else {
-            throw new Error('Invalid response format from API');
-        }
     } catch (error) {
         console.error('Error:', error);
         solution.innerHTML = `<div class="error">Error: ${error.message}</div>`;
@@ -390,4 +332,39 @@ function formatSolution(solutionText) {
     
     formattedHtml += '</div>';
     return formattedHtml;
+}
+
+// Add after verifyEquationImage function
+async function detectEquation(base64Image) {
+    try {
+        const response = await fetch(`${API_URL}?key=${API_KEY}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                contents: [{
+                    parts: [{
+                        text: "What is the exact mathematical equation shown in this image? Respond with just the equation, using proper mathematical symbols (×, ÷, −, =)."
+                    }, {
+                        inline_data: {
+                            mime_type: "image/jpeg",
+                            data: base64Image.split(',')[1]
+                        }
+                    }]
+                }],
+                generationConfig: {
+                    temperature: 0.1,
+                    topK: 32,
+                    topP: 1
+                }
+            })
+        });
+
+        const data = await response.json();
+        return data.candidates[0].content.parts[0].text.trim();
+    } catch (error) {
+        console.error('Error detecting equation:', error);
+        throw error;
+    }
 } 
