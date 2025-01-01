@@ -296,15 +296,55 @@ body::before {
 
 /* Mathematical terms styling */
 .math {
-    font-family: 'Courier New', monospace;
-    color: var(--neon-pink);
-    background-color: rgba(255, 0, 255, 0.1);
-    padding: 2px 6px;
-    border-radius: 3px;
-    font-size: 0.9em;
-    border: 1px solid rgba(255, 0, 255, 0.2);
-    display: inline-block;
-    margin: 0 2px;
+    font-family: "Times New Roman", Times, serif;
+    font-size: 1.1em;
+    padding: 0 4px;
+    color: var(--neon-blue);
+}
+
+.warning {
+    color: #ff3d00;
+    font-weight: bold;
+    padding: 10px;
+    margin: 10px 0;
+    border-left: 4px solid #ff3d00;
+    background: rgba(255, 61, 0, 0.1);
+    display: block;
+}
+
+.theme-industrial .warning {
+    border-left-color: var(--industrial-accent);
+    background: var(--industrial-secondary);
+}
+
+/* Solution steps */
+.cyber-solution ol {
+    counter-reset: steps;
+    list-style-type: none;
+    padding-left: 0;
+}
+
+.cyber-solution ol li {
+    counter-increment: steps;
+    margin-bottom: 15px;
+    padding-left: 40px;
+    position: relative;
+}
+
+.cyber-solution ol li::before {
+    content: counter(steps);
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: var(--neon-blue);
+    color: var(--cyber-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
 }
 
 /* Responsive design improvements */

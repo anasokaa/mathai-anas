@@ -79,53 +79,71 @@ async function solveEquation() {
         }
 
         const promptText = language === 'french' 
-            ? `Tu es un expert en mathématiques spécialisé dans l'interprétation d'équations manuscrites.
+            ? `Tu es un expert en mathématiques qui analyse et résout des équations avec une précision de livre scolaire.
 
                 ÉTAPES D'ANALYSE:
-                1. TRANSCRIPTION:
-                   * Examine attentivement chaque symbole
-                   * Liste tous les symboles que tu vois (nombres, variables, opérateurs)
-                   * Réécris l'équation complète en format texte
-                   * Confirme ta transcription
+                1. VÉRIFICATION DE LISIBILITÉ:
+                   * Si l'écriture n'est pas parfaitement claire, indique immédiatement les caractères ambigus
+                   * Pour chaque symbole ambigu, liste toutes les interprétations possibles
+                   * Demande une confirmation si nécessaire
 
-                2. VÉRIFICATION:
-                   * Vérifie si x, y, z sont des variables
-                   * Distingue entre 1 et l, 0 et O, 7 et t
-                   * Confirme les opérateurs (+, -, ×, ÷, =, etc.)
-                   * Indique toute ambiguïté
+                2. TRANSCRIPTION:
+                   * Réécris l'équation en utilisant une notation mathématique standard
+                   * Utilise les symboles mathématiques appropriés:
+                     - Multiplier: ×
+                     - Diviser: ÷
+                     - Moins: −
+                     - Plus ou moins: ±
+                     - Racine carrée: √
+                     - Puissance: exposant en petit (²,³)
+                     - Fraction: avec barre horizontale
 
                 3. RÉSOLUTION:
-                   * Indique le niveau (facile/moyen/difficile)
-                   * Pour niveau facile: 3 étapes maximum
-                   * Pour niveau moyen/difficile: explications détaillées
+                   * Niveau: (Facile/Moyen/Difficile)
+                   * Présente la solution comme dans un manuel scolaire
+                   * Utilise des symboles mathématiques propres
+                   * Chaque étape doit être clairement numérotée
+                   * Inclus les propriétés mathématiques utilisées
+
+                Si tu as un doute sur un symbole, écris:
+                ⚠️ ATTENTION: [Décris l'ambiguïté et demande une clarification]
 
                 Utilise <math> pour les expressions mathématiques.
                 Voici l'équation à analyser:`
-            : `You are a mathematics expert specialized in interpreting handwritten equations.
+            : `You are a mathematics expert who analyzes and solves equations with textbook precision.
 
                 ANALYSIS STEPS:
-                1. TRANSCRIPTION:
-                   * Carefully examine each symbol
-                   * List all symbols you see (numbers, variables, operators)
-                   * Rewrite the complete equation in text format
-                   * Confirm your transcription
+                1. LEGIBILITY CHECK:
+                   * If the writing isn't perfectly clear, immediately indicate ambiguous characters
+                   * For each ambiguous symbol, list all possible interpretations
+                   * Ask for confirmation if needed
 
-                2. VERIFICATION:
-                   * Check if x, y, z are variables
-                   * Distinguish between 1 and l, 0 and O, 7 and t
-                   * Confirm operators (+, -, ×, ÷, =, etc.)
-                   * Note any ambiguity
+                2. TRANSCRIPTION:
+                   * Rewrite the equation using standard mathematical notation
+                   * Use proper mathematical symbols:
+                     - Multiply: ×
+                     - Divide: ÷
+                     - Minus: −
+                     - Plus/Minus: ±
+                     - Square root: √
+                     - Powers: superscript (²,³)
+                     - Fractions: with horizontal bar
 
                 3. SOLUTION:
-                   * Indicate level (easy/medium/hard)
-                   * For easy level: 3 steps maximum
-                   * For medium/hard level: detailed explanations
+                   * Level: (Easy/Medium/Hard)
+                   * Present the solution like a textbook
+                   * Use clean mathematical symbols
+                   * Each step should be clearly numbered
+                   * Include mathematical properties used
+
+                If you have any doubt about a symbol, write:
+                ⚠️ WARNING: [Describe the ambiguity and ask for clarification]
 
                 Use <math> tags for mathematical expressions.
                 Here's the equation to analyze:`;
 
         const generationConfig = {
-            temperature: 0.2,
+            temperature: 0.1,
             topK: 40,
             topP: 0.95,
             maxOutputTokens: 2048,
@@ -164,6 +182,7 @@ async function solveEquation() {
         
         if (data.candidates && data.candidates[0]?.content) {
             let solutionText = data.candidates[0].content.parts[0].text;
+            solutionText = formatSolution(solutionText);
             
             // Parse difficulty level from the first line
             const firstLine = solutionText.split('\n')[0].toLowerCase();
@@ -324,4 +343,32 @@ async function verifyEquationImage(base64Image) {
         console.error('Error verifying image:', error);
         return true;
     }
+}
+
+// Update the solution formatting
+function formatSolution(solutionText) {
+    // Replace basic math symbols with proper Unicode characters
+    const replacements = {
+        '*': '×',
+        '/': '÷',
+        '+-': '±',
+        'sqrt': '√',
+        '^2': '²',
+        '^3': '³',
+        '->': '→',
+        '<=': '≤',
+        '>=': '≥',
+        '!=': '≠',
+        '==': '='
+    };
+
+    Object.entries(replacements).forEach(([key, value]) => {
+        solutionText = solutionText.replace(new RegExp(key, 'g'), value);
+    });
+
+    // Add warning styling
+    solutionText = solutionText.replace(/⚠️ WARNING:/g, '<span class="warning">⚠️ WARNING:</span>');
+    solutionText = solutionText.replace(/⚠️ ATTENTION:/g, '<span class="warning">⚠️ ATTENTION:</span>');
+
+    return solutionText;
 } 
