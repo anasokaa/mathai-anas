@@ -164,26 +164,7 @@ async function solveEquation() {
                             data: base64Image.split(',')[1]
                         }
                     }]
-                }],
-                generationConfig: generationConfig,
-                safetySettings: [
-                    {
-                        category: "HARM_CATEGORY_HATE_SPEECH",
-                        threshold: "BLOCK_NONE"
-                    },
-                    {
-                        category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-                        threshold: "BLOCK_NONE"
-                    },
-                    {
-                        category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-                        threshold: "BLOCK_NONE"
-                    },
-                    {
-                        category: "HARM_CATEGORY_HARASSMENT",
-                        threshold: "BLOCK_NONE"
-                    }
-                ]
+                }]
             })
         });
 
@@ -334,30 +315,7 @@ async function verifyEquationImage(base64Image) {
                             data: base64Image.split(',')[1]
                         }
                     }]
-                }],
-                generationConfig: {
-                    temperature: 0.4,
-                    topK: 32,
-                    topP: 1
-                },
-                safetySettings: [
-                    {
-                        category: "HARM_CATEGORY_HATE_SPEECH",
-                        threshold: "BLOCK_NONE"
-                    },
-                    {
-                        category: "HARM_CATEGORY_SEXUALLY_EXPLICIT",
-                        threshold: "BLOCK_NONE"
-                    },
-                    {
-                        category: "HARM_CATEGORY_DANGEROUS_CONTENT",
-                        threshold: "BLOCK_NONE"
-                    },
-                    {
-                        category: "HARM_CATEGORY_HARASSMENT",
-                        threshold: "BLOCK_NONE"
-                    }
-                ]
+                }]
             })
         });
 
