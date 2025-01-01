@@ -79,28 +79,28 @@ async function solveEquation() {
         }
 
         const promptText = language === 'french' 
-            ? `Résous cette équation mathématique de manière concise:
+            ? `Résous cette équation de façon concise:
 
                 RÈGLES:
-                - Montre uniquement les étapes essentielles
-                - Indique le niveau au début (Facile/Moyen/Difficile)
-                - Utilise une notation mathématique simple
-                - Pas de texte superflu
-                - Pas de balises <math>
-                - Utilise les symboles: ×, ÷, −, ±, √, ², ³
+                - Pour équation FACILE: montre uniquement l'équation et la réponse finale
+                - Pour équation MOYENNE/DIFFICILE: montre les étapes clés
+                - Commence par "Niveau: "
+                - Pas de texte explicatif
+                - Utilise les symboles: ×, ÷, −, =
+                - Écris les équations directement, sans balises
 
-                Voici l'équation:`
-            : `Solve this mathematical equation concisely:
+                Équation:`
+            : `Solve this equation concisely:
 
                 RULES:
-                - Show only essential steps
-                - Indicate level at start (Easy/Medium/Hard)
-                - Use simple mathematical notation
-                - No unnecessary text
-                - No <math> tags
-                - Use symbols: ×, ÷, −, ±, √, ², ³
+                - For EASY equation: show only equation and final answer
+                - For MEDIUM/HARD equation: show key steps
+                - Start with "Level: "
+                - No explanatory text
+                - Use symbols: ×, ÷, −, =
+                - Write equations directly, no tags
 
-                Here's the equation:`;
+                Equation:`;
 
         const generationConfig = {
             temperature: 0.1,
@@ -303,20 +303,21 @@ async function verifyEquationImage(base64Image) {
 
 // Update the solution formatting
 function formatSolution(solutionText) {
-    // Remove <math> tags
+    // Remove all <math> tags
     solutionText = solutionText.replace(/<\/?math>/g, '');
-    
-    // Remove legibility check and transcription sections
-    solutionText = solutionText.replace(/.*?Level:/s, 'Level:');
     
     // Clean up the formatting
     solutionText = solutionText
-        .replace(/\*\*/g, '') // Remove bold markers
-        .replace(/xx.*?xx/g, '') // Remove xx markers
-        .replace(/\s+/g, ' ') // Remove extra spaces
+        .replace(/\*\*/g, '')
+        .replace(/xx.*?xx/g, '')
+        .replace(/solving the equation/gi, '')
+        .replace(/\s+/g, ' ')
+        .replace(/Step \d+:/g, '')
+        .replace(/Therefore,/g, '')
+        .replace(/Thus,/g, '')
         .trim();
 
-    // Replace basic math symbols with proper Unicode characters
+    // Replace basic math symbols
     const replacements = {
         '\\*': '×',
         '\\/': '÷',
