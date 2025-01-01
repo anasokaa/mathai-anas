@@ -79,42 +79,62 @@ async function solveEquation() {
         }
 
         const promptText = language === 'french' 
-            ? `Tu es un professeur de mathématiques expliquant la résolution d'équations.
+            ? `Tu es un professeur de mathématiques résolvant une équation.
 
-                STRUCTURE DE LA RÉPONSE:
-                1. Niveau: (Facile/Moyen/Difficile)
-                2. Équation initiale
-                3. Méthode de résolution:
-                   - Explique brièvement la stratégie
-                   - Montre chaque étape clairement
-                   - Utilise des flèches (→) pour montrer la progression
-                   - Indique la propriété utilisée entre parenthèses
-                4. Solution finale soulignée
+                FORMAT DE LA SOLUTION:
 
-                FORMAT:
-                - Utilise des symboles mathématiques: ×, ÷, −, =
-                - Une étape par ligne
-                - Aligne les égalités
-                - Pas de balises <math>
+                1. Commence par "Niveau: (Facile/Moyen/Difficile)"
+
+                2. Écris l'équation initiale sur une nouvelle ligne
+
+                3. Pour chaque étape de résolution:
+                   - Commence une nouvelle ligne
+                   - Montre l'équation complète
+                   - Mets une flèche (→) au début de la ligne
+                   - Ajoute l'explication entre parenthèses à la fin
+
+                4. Pour la réponse finale:
+                   - Commence une nouvelle ligne
+                   - Écris "∴" (donc) suivi de la solution
+                   - Souligne la réponse finale
+
+                EXEMPLE:
+                Niveau: Facile
+                2x + 4 = 10
+
+                → 2x = 10 - 4    (soustraction)
+                → 2x = 6         (simplification)
+                → x = 3          (division par 2)
+                ∴ x = 3          (solution finale)
 
                 Résous cette équation:`
-            : `You are a math teacher explaining equation solving.
+            : `You are a math teacher solving an equation.
 
-                RESPONSE STRUCTURE:
-                1. Level: (Easy/Medium/Hard)
-                2. Initial equation
-                3. Solving method:
-                   - Briefly explain the strategy
-                   - Show each step clearly
-                   - Use arrows (→) to show progression
-                   - Indicate the property used in parentheses
-                4. Final solution underlined
+                SOLUTION FORMAT:
 
-                FORMAT:
-                - Use mathematical symbols: ×, ÷, −, =
-                - One step per line
-                - Align equations
-                - No <math> tags
+                1. Start with "Level: (Easy/Medium/Hard)"
+
+                2. Write the initial equation on a new line
+
+                3. For each solving step:
+                   - Start a new line
+                   - Show the complete equation
+                   - Put an arrow (→) at the start of the line
+                   - Add explanation in parentheses at the end
+
+                4. For the final answer:
+                   - Start a new line
+                   - Write "∴" (therefore) followed by the solution
+                   - Underline the final answer
+
+                EXAMPLE:
+                Level: Easy
+                2x + 4 = 10
+
+                → 2x = 10 - 4    (subtraction)
+                → 2x = 6         (simplification)
+                → x = 3          (division by 2)
+                ∴ x = 3          (final solution)
 
                 Solve this equation:`;
 
