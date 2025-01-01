@@ -5,7 +5,9 @@ const FUNNY_MESSAGES = [
     "That's a lovely picture... but MathAI Anas needs equations! 🤔",
     "Unless you're trying to calculate the cuteness of that image, I need an equation! 📐",
     "Nice shot! But my mathematical powers are useless here. Try an equation! ✨",
-    "I'm MathAI Anas, not an art critic! Let's see some equations! 🎨➗"
+    "I'm MathAI Anas, not an art critic! Let's see some equations! 🎨➗",
+    "Hmm... I can't quite make out the equation. Could you try a clearer photo? 📸",
+    "The equation seems a bit blurry. A clearer shot would help me solve it better! 🔍"
 ];
 
 // Event Listeners
@@ -77,42 +79,54 @@ async function solveEquation() {
         }
 
         const promptText = language === 'french' 
-            ? `Tu es un expert en mathématiques qui parle français. Analyse d'abord la difficulté de l'équation (facile/moyen/difficile).
+            ? `Tu es un expert en mathématiques qui parle français, capable de comprendre les équations manuscrites et tapées.
+                Analyse d'abord la difficulté de l'équation (facile/moyen/difficile).
 
-            RÈGLES DE RÉPONSE:
-            - Pour une équation FACILE:
-              * Indique "Niveau: Facile"
-              * Donne uniquement les étapes essentielles
-              * Maximum 3 étapes
-              * Sois direct et concis
-              * Pas d'explications détaillées
+                RÈGLES DE RÉPONSE:
+                - Pour une équation FACILE:
+                  * Indique "Niveau: Facile"
+                  * Donne uniquement les étapes essentielles
+                  * Maximum 3 étapes
+                  * Sois direct et concis
+                  * Pas d'explications détaillées
 
-            - Pour une équation MOYENNE ou DIFFICILE:
-              * Indique le niveau approprié
-              * Fournis des explications détaillées
-              * Explique chaque étape
-              * Ajoute des clarifications si nécessaire
+                - Pour une équation MOYENNE ou DIFFICILE:
+                  * Indique le niveau approprié
+                  * Fournis des explications détaillées
+                  * Explique chaque étape
+                  * Ajoute des clarifications si nécessaire
 
-            Utilise <math> pour encadrer les termes mathématiques.
-            Voici l'équation à résoudre:`
-            : `You are a mathematics expert. First analyze the difficulty of the equation (easy/medium/hard).
+                Si l'écriture est difficile à lire:
+                1. Commence par réécrire l'équation clairement
+                2. Confirme si ta transcription est correcte
+                3. Puis résous l'équation
 
-            RESPONSE RULES:
-            - For an EASY equation:
-              * Indicate "Level: Easy"
-              * Provide only essential steps
-              * Maximum 3 steps
-              * Be direct and concise
-              * No detailed explanations
+                Utilise <math> pour encadrer les termes mathématiques.
+                Voici l'équation à résoudre:`
+            : `You are a mathematics expert capable of understanding both handwritten and typed equations.
+                First analyze the difficulty of the equation (easy/medium/hard).
 
-            - For a MEDIUM or HARD equation:
-              * Indicate appropriate level
-              * Provide detailed explanations
-              * Explain each step
-              * Add clarifications when needed
+                RESPONSE RULES:
+                - For an EASY equation:
+                  * Indicate "Level: Easy"
+                  * Provide only essential steps
+                  * Maximum 3 steps
+                  * Be direct and concise
+                  * No detailed explanations
 
-            Use <math> tags around mathematical terms.
-            Here's the equation to solve:`;
+                - For a MEDIUM or HARD equation:
+                  * Indicate appropriate level
+                  * Provide detailed explanations
+                  * Explain each step
+                  * Add clarifications when needed
+
+                If the handwriting is difficult to read:
+                1. Start by clearly rewriting the equation
+                2. Confirm if your transcription is correct
+                3. Then solve the equation
+
+                Use <math> tags around mathematical terms.
+                Here's the equation to solve:`;
 
         const response = await fetch(`${API_URL}?key=${API_KEY}`, {
             method: 'POST',
@@ -274,20 +288,37 @@ async function verifyEquationImage(base64Image) {
             body: JSON.stringify({
                 contents: [{
                     parts: [{
-                        text: "Is this image a mathematical equation? Respond with only 'yes' or 'no'."
+                        text: "Can you see a mathematical equation in this image (either handwritten or typed)? Respond with 'yes', 'no', or 'unclear'. If unclear, explain what makes it hard to read."
                     }, {
                         inline_data: {
                             mime_type: "image/jpeg",
                             data: base64Image.split(',')[1]
                         }
                     }]
-                }]
+                }],
+                generationConfig: {
+                    temperature: 0.4,
+                    topK: 32,
+                    topP: 1
+                }
             })
         });
 
         const data = await response.json();
-        return data.candidates[0].content.parts[0].text.toLowerCase().includes('yes');
+        const response_text = data.candidates[0].content.parts[0].text.toLowerCase();
+        
+        if (response_text.includes('unclear')) {
+            const language = document.getElementById('language').value;
+            throw new Error(language === 'french' 
+                ? "L'écriture n'est pas très lisible. Essayez de :\n- Écrire plus gros\n- Améliorer l'éclairage\n- Utiliser un fond plus clair\n- Éviter les plis dans le papier"
+                : "The writing isn't very clear. Try to:\n- Write larger\n- Improve lighting\n- Use a lighter background\n- Avoid paper folds");
+        }
+        
+        return response_text.includes('yes');
     } catch (error) {
+        if (error.message.includes("isn't very clear") || error.message.includes("n'est pas très lisible")) {
+            throw error;
+        }
         console.error('Error verifying image:', error);
         return true;
     }
