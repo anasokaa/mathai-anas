@@ -8,23 +8,23 @@ const FUNNY_MESSAGES = [
     "I'm MathAI Anas, not an art critic! Let's see some equations! 🎨➗"
 ];
 
+// Event Listeners
+document.getElementById('uploadButton').addEventListener('click', () => {
+    document.getElementById('imageInput').click();
+});
+
 document.getElementById('imageInput').addEventListener('change', handleImageSelect);
 document.getElementById('solveButton').addEventListener('click', solveEquation);
-document.getElementById('imageInput').addEventListener('change', function(e) {
-    const fileName = e.target.files[0]?.name;
-    document.getElementById('fileLabel').textContent = fileName || 'Choose Equation';
-});
 
 async function solveEquation() {
     const imageInput = document.getElementById('imageInput');
-    const cameraInput = document.getElementById('cameraInput');
-    const file = imageInput.files[0] || cameraInput.files[0];
+    const file = imageInput.files[0];
     const loading = document.getElementById('loading');
     const solution = document.getElementById('solution');
     const language = document.getElementById('language').value;
 
     if (!file) {
-        alert('Please select an image or take a photo first!');
+        alert('Please select an image first!');
         return;
     }
 
@@ -151,6 +151,21 @@ async function solveEquation() {
     }
 }
 
+function handleImageSelect(event) {
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const preview = document.getElementById('imagePreview');
+            preview.src = e.target.result;
+            preview.style.display = 'block';
+            document.getElementById('solveButton').disabled = false;
+        }
+        reader.readAsDataURL(file);
+    }
+}
+
+// Helper functions
 function getBase64(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -158,28 +173,6 @@ function getBase64(file) {
         reader.onload = () => resolve(reader.result);
         reader.onerror = error => reject(error);
     });
-}
-
-function updateLoadingText(language) {
-    const loadingText = document.getElementById('loadingText');
-    loadingText.textContent = language === 'french' ? 'Décodage...' : 'Decoding...';
-}
-
-document.getElementById('language').addEventListener('change', function(e) {
-    updateLoadingText(e.target.value);
-});
-
-// Add theme switching
-document.getElementById('theme').addEventListener('change', function(e) {
-    document.body.className = `theme-${e.target.value}`;
-    localStorage.setItem('preferred-theme', e.target.value);
-});
-
-// Restore preferred theme
-const savedTheme = localStorage.getItem('preferred-theme');
-if (savedTheme) {
-    document.getElementById('theme').value = savedTheme;
-    document.body.className = `theme-${savedTheme}`;
 }
 
 // Mobile preview handling
@@ -199,6 +192,46 @@ function setupMobilePreview() {
         });
     }
 }
+
+// Language handling
+function updateUILanguage(language) {
+    const isFrenchlanguage = language === 'french';
+    
+    // Update button texts
+    document.querySelector('#uploadButton .button-text').textContent = 
+        isFrenchlanguage ? 'Importer Image' : 'Upload Image';
+    
+    document.querySelector('#solveButton').textContent = 
+        isFrenchlanguage ? 'Résoudre' : 'Decode Equation';
+    
+    // Update loading text
+    document.getElementById('loadingText').textContent = 
+        isFrenchlanguage ? 'Décodage...' : 'Decoding...';
+}
+
+// Theme handling
+document.getElementById('theme').addEventListener('change', function(e) {
+    document.body.className = `theme-${e.target.value}`;
+    localStorage.setItem('preferred-theme', e.target.value);
+});
+
+// Initialize
+document.addEventListener('DOMContentLoaded', () => {
+    // Restore preferred theme
+    const savedTheme = localStorage.getItem('preferred-theme');
+    if (savedTheme) {
+        document.getElementById('theme').value = savedTheme;
+        document.body.className = `theme-${savedTheme}`;
+    }
+    
+    setupMobilePreview();
+    updateUILanguage(document.getElementById('language').value);
+});
+
+// Language change handler
+document.getElementById('language').addEventListener('change', function(e) {
+    updateUILanguage(e.target.value);
+});
 
 // Add equation verification
 async function verifyEquationImage(base64Image) {
@@ -228,70 +261,4 @@ async function verifyEquationImage(base64Image) {
         console.error('Error verifying image:', error);
         return true;
     }
-}
-
-// Add these event listeners and modify existing ones
-document.getElementById('uploadButton').addEventListener('click', () => {
-    document.getElementById('imageInput').click();
-});
-
-// Update file input handlers
-document.getElementById('imageInput').removeEventListener('change', previewImage);
-document.getElementById('imageInput').addEventListener('change', handleImageSelect);
-document.getElementById('cameraInput').addEventListener('change', handleImageSelect);
-
-function handleImageSelect(event) {
-    const file = event.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            const preview = document.getElementById('imagePreview');
-            preview.src = e.target.result;
-            preview.style.display = 'block';
-            document.getElementById('solveButton').disabled = false;
-        }
-        reader.readAsDataURL(file);
-    }
-}
-
-// Initialize capabilities check
-document.addEventListener('DOMContentLoaded', () => {
-    checkDeviceCapabilities();
-    setupMobilePreview();
-});
-
-// Add fullscreen exit handler
-document.addEventListener('fullscreenchange', () => {
-    if (!document.fullscreenElement && window.innerWidth <= 768) {
-        const preview = document.getElementById('imagePreview');
-        preview.style.position = 'static';
-    }
-});
-
-// Update the updateUILanguage function
-function updateUILanguage(language) {
-    const isFrenchlanguage = language === 'french';
-    
-    // Update button texts
-    document.querySelector('#uploadButton .button-text').textContent = 
-        isFrenchlanguage ? 'Importer Image' : 'Upload Image';
-    
-    document.querySelector('#solveButton').textContent = 
-        isFrenchlanguage ? 'Résoudre' : 'Decode Equation';
-    
-    // Update loading text
-    document.getElementById('loadingText').textContent = 
-        isFrenchlanguage ? 'Décodage...' : 'Decoding...';
-}
-
-// Update the language change event listener
-document.getElementById('language').addEventListener('change', function(e) {
-    updateUILanguage(e.target.value);
-});
-
-// Call updateUILanguage on page load with default language
-document.addEventListener('DOMContentLoaded', () => {
-    checkDeviceCapabilities();
-    setupMobilePreview();
-    updateUILanguage(document.getElementById('language').value);
-}); 
+} 
