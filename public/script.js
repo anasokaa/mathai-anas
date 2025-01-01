@@ -200,11 +200,6 @@ function setupMobilePreview() {
     }
 }
 
-// Camera handling
-document.getElementById('cameraButton').addEventListener('click', function() {
-    document.getElementById('imageInput').click();
-});
-
 // Add equation verification
 async function verifyEquationImage(base64Image) {
     try {
@@ -240,15 +235,6 @@ document.getElementById('uploadButton').addEventListener('click', () => {
     document.getElementById('imageInput').click();
 });
 
-document.getElementById('cameraButton').addEventListener('click', () => {
-    // Check if the device has a camera
-    if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-        document.getElementById('cameraInput').click();
-    } else {
-        alert('No camera detected on your device');
-    }
-});
-
 // Update file input handlers
 document.getElementById('imageInput').removeEventListener('change', previewImage);
 document.getElementById('imageInput').addEventListener('change', handleImageSelect);
@@ -268,16 +254,6 @@ function handleImageSelect(event) {
     }
 }
 
-// Add this function to check device capabilities
-function checkDeviceCapabilities() {
-    const cameraButton = document.getElementById('cameraButton');
-    
-    // Check if the device has a camera
-    if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        cameraButton.style.display = 'none';
-    }
-}
-
 // Initialize capabilities check
 document.addEventListener('DOMContentLoaded', () => {
     checkDeviceCapabilities();
@@ -292,16 +268,13 @@ document.addEventListener('fullscreenchange', () => {
     }
 });
 
-// Update the updateUILanguage function to remove text-related translations
+// Update the updateUILanguage function
 function updateUILanguage(language) {
     const isFrenchlanguage = language === 'french';
     
     // Update button texts
     document.querySelector('#uploadButton .button-text').textContent = 
         isFrenchlanguage ? 'Importer Image' : 'Upload Image';
-    
-    document.querySelector('#cameraButton .button-text').textContent = 
-        isFrenchlanguage ? 'Prendre Photo' : 'Take Photo';
     
     document.querySelector('#solveButton').textContent = 
         isFrenchlanguage ? 'Résoudre' : 'Decode Equation';
