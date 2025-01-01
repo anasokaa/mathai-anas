@@ -9,8 +9,39 @@ const FUNNY_MESSAGES = [
 ];
 
 // Event Listeners
-document.getElementById('uploadButton').addEventListener('click', () => {
-    document.getElementById('imageInput').click();
+document.addEventListener('DOMContentLoaded', () => {
+    // Restore preferred theme
+    const savedTheme = localStorage.getItem('preferred-theme');
+    if (savedTheme) {
+        document.getElementById('theme').value = savedTheme;
+        document.body.className = `theme-${savedTheme}`;
+    }
+    
+    setupMobilePreview();
+    updateUILanguage(document.getElementById('language').value);
+    
+    // Add mobile-specific handling
+    const uploadButton = document.getElementById('uploadButton');
+    const imageInput = document.getElementById('imageInput');
+
+    // Handle both click and touch events
+    uploadButton.addEventListener('click', (e) => {
+        e.preventDefault();
+        imageInput.click();
+    });
+
+    uploadButton.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        imageInput.click();
+    });
+
+    // Make sure the input is properly handled
+    imageInput.addEventListener('change', handleImageSelect);
+    
+    // Prevent default behavior on mobile
+    imageInput.addEventListener('touchstart', (e) => {
+        e.stopPropagation();
+    });
 });
 
 document.getElementById('imageInput').addEventListener('change', handleImageSelect);
@@ -152,6 +183,7 @@ async function solveEquation() {
 }
 
 function handleImageSelect(event) {
+    event.preventDefault();
     const file = event.target.files[0];
     if (file) {
         const reader = new FileReader();
@@ -160,6 +192,11 @@ function handleImageSelect(event) {
             preview.src = e.target.result;
             preview.style.display = 'block';
             document.getElementById('solveButton').disabled = false;
+            
+            // Scroll to preview on mobile
+            if (window.innerWidth <= 768) {
+                preview.scrollIntoView({ behavior: 'smooth' });
+            }
         }
         reader.readAsDataURL(file);
     }
@@ -213,19 +250,6 @@ function updateUILanguage(language) {
 document.getElementById('theme').addEventListener('change', function(e) {
     document.body.className = `theme-${e.target.value}`;
     localStorage.setItem('preferred-theme', e.target.value);
-});
-
-// Initialize
-document.addEventListener('DOMContentLoaded', () => {
-    // Restore preferred theme
-    const savedTheme = localStorage.getItem('preferred-theme');
-    if (savedTheme) {
-        document.getElementById('theme').value = savedTheme;
-        document.body.className = `theme-${savedTheme}`;
-    }
-    
-    setupMobilePreview();
-    updateUILanguage(document.getElementById('language').value);
 });
 
 // Language change handler

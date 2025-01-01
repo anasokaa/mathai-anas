@@ -517,21 +517,33 @@ body::before {
 /* Mobile optimizations */
 @media (max-width: 768px) {
     .input-methods {
-        flex-direction: row;
+        flex-direction: column;
         width: 100%;
     }
 
-    .input-methods .cyber-button {
-        flex: 1;
-        padding: 15px;
+    .cyber-button {
+        width: 100%;
+        margin-bottom: 10px;
     }
 
-    .button-text {
-        display: none;
+    .cyber-file {
+        /* Remove display: none for mobile */
+        opacity: 0;
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        cursor: pointer;
     }
 
-    .cyber-button .icon {
-        margin: 0;
-        font-size: 1.5em;
+    .upload-section {
+        position: relative;
+    }
+
+    /* Make buttons more tappable on mobile */
+    .cyber-button {
+        min-height: 44px;
+        padding: 12px 20px;
     }
 } 
