@@ -79,64 +79,64 @@ async function solveEquation() {
         }
 
         const promptText = language === 'french' 
-            ? `Tu es un professeur de mathématiques résolvant une équation.
+            ? `Tu es un expert en reconnaissance d'équations mathématiques manuscrites et typographiées.
+
+                RÈGLES DE RECONNAISSANCE:
+                1. Analyse attentivement chaque symbole
+                2. Distingue clairement:
+                   - Les chiffres (0-9)
+                   - Les variables (x, y, z)
+                   - Les opérateurs (+, -, ×, ÷, =)
+                   - Les exposants et indices
+                   - Les fractions et racines
+                3. En cas d'ambiguïté:
+                   - Compare avec les symboles standards
+                   - Utilise le contexte mathématique
+                   - Vérifie la cohérence de l'équation
 
                 FORMAT DE LA SOLUTION:
-
-                1. Commence par "Équation: [équation]"
-                2. Puis "Niveau: [Facile/Moyen/Difficile]"
+                1. Équation: [équation transcrite proprement]
+                2. Niveau: [Facile/Moyen/Difficile]
                 3. Pour chaque étape:
-                   - Écris l'équation sur une nouvelle ligne
-                   - Ajoute l'explication sur la ligne suivante
-                   - Laisse une ligne vide entre chaque étape
-                4. Termine par "Solution: x = [valeur]"
+                   - Équation claire sur une ligne
+                   - Explication sur la ligne suivante
+                4. Solution: x = [valeur]
 
-                EXEMPLE:
-                Équation: 2x + 4 = 10
-                Niveau: Facile
+                IMPORTANT:
+                - Vérifie deux fois la transcription
+                - Assure-toi que l'équation a un sens mathématique
+                - En cas de doute, demande une clarification
 
-                2x + 4 = 10
-                On commence avec l'équation initiale
+                Résous cette équation:`
+            : `You are an expert in recognizing both handwritten and typed mathematical equations.
 
-                2x = 10 - 4
-                On soustrait 4 des deux côtés
-
-                2x = 6
-                On simplifie
-
-                x = 3
-                On divise les deux côtés par 2
-
-                Solution: x = 3`
-            : `You are a math teacher solving an equation.
+                RECOGNITION RULES:
+                1. Carefully analyze each symbol
+                2. Clearly distinguish:
+                   - Numbers (0-9)
+                   - Variables (x, y, z)
+                   - Operators (+, -, ×, ÷, =)
+                   - Exponents and subscripts
+                   - Fractions and roots
+                3. In case of ambiguity:
+                   - Compare with standard symbols
+                   - Use mathematical context
+                   - Check equation consistency
 
                 SOLUTION FORMAT:
-
-                1. Start with "Equation: [equation]"
-                2. Then "Level: [Easy/Medium/Hard]"
+                1. Equation: [properly transcribed equation]
+                2. Level: [Easy/Medium/Hard]
                 3. For each step:
-                   - Write the equation on a new line
-                   - Add explanation on the next line
-                   - Leave an empty line between steps
-                4. End with "Solution: x = [value]"
+                   - Clear equation on one line
+                   - Explanation on next line
+                4. Solution: x = [value]
 
-                EXAMPLE:
-                Equation: 2x + 4 = 10
-                Level: Easy
+                IMPORTANT:
+                - Double-check the transcription
+                - Ensure the equation makes mathematical sense
+                - If in doubt, ask for clarification
 
-                2x + 4 = 10
-                Starting with the initial equation
-
-                2x = 10 - 4
-                Subtract 4 from both sides
-
-                2x = 6
-                Simplify
-
-                x = 3
-                Divide both sides by 2
-
-                Solution: x = 3`;
+                Solve this equation:`;
 
         const generationConfig = {
             temperature: 0.1,
@@ -306,34 +306,48 @@ async function verifyEquationImage(base64Image) {
             body: JSON.stringify({
                 contents: [{
                     parts: [{
-                        text: "Can you see a mathematical equation in this image (either handwritten or typed)? Respond with 'yes', 'no', or 'unclear'. If unclear, explain what makes it hard to read."
+                        text: `Analyze this image carefully:
+                        1. Is there a clear mathematical equation?
+                        2. Are all symbols clearly visible?
+                        3. Can you distinguish between:
+                           - Numbers and variables
+                           - Operation symbols
+                           - Equality signs
+                        4. Is the writing clear enough to solve?
+
+                        Respond with:
+                        - "yes" if everything is clear
+                        - "no" if there's no equation
+                        - Specific feedback if there are clarity issues`
                     }, {
                         inline_data: {
                             mime_type: "image/jpeg",
                             data: base64Image.split(',')[1]
                         }
                     }]
-                }]
+                }],
+                generationConfig: {
+                    temperature: 0.1,
+                    topK: 32,
+                    topP: 1
+                }
             })
         });
 
         const data = await response.json();
         const response_text = data.candidates[0].content.parts[0].text.toLowerCase();
         
-        if (response_text.includes('unclear')) {
+        if (response_text.includes('unclear') || response_text.includes('issue')) {
             const language = document.getElementById('language').value;
             throw new Error(language === 'french' 
-                ? "L'écriture n'est pas très lisible. Essayez de :\n- Écrire plus gros\n- Améliorer l'éclairage\n- Utiliser un fond plus clair\n- Éviter les plis dans le papier"
-                : "The writing isn't very clear. Try to:\n- Write larger\n- Improve lighting\n- Use a lighter background\n- Avoid paper folds");
+                ? "Pour une meilleure reconnaissance:\n- Écrivez plus gros et plus clair\n- Assurez un bon contraste\n- Évitez les symboles ambigus\n- Utilisez un fond uni\n- Prenez la photo bien droite"
+                : "For better recognition:\n- Write larger and clearer\n- Ensure good contrast\n- Avoid ambiguous symbols\n- Use a plain background\n- Take the photo straight on");
         }
         
         return response_text.includes('yes');
     } catch (error) {
-        if (error.message.includes("isn't very clear") || error.message.includes("n'est pas très lisible")) {
-            throw error;
-        }
         console.error('Error verifying image:', error);
-        return true;
+        throw error;
     }
 }
 
