@@ -79,42 +79,28 @@ async function solveEquation() {
         }
 
         const promptText = language === 'french' 
-            ? `Tu es un professeur de mathématiques expérimenté qui explique les solutions de manière claire et pédagogique.
-
-                Pour résoudre cette équation:
-
-                1. Commence par écrire l'équation clairement
-                2. Indique le niveau (Facile/Moyen/Difficile)
-                3. Explique la solution étape par étape, comme dans un manuel scolaire
-                4. Utilise un langage naturel et pédagogique
+            ? `Résous cette équation mathématique de manière concise:
 
                 RÈGLES:
-                - Pas de numérotation avec "xx"
-                - Pas de titres en majuscules
-                - Écris naturellement, comme si tu expliquais à un élève
-                - Utilise des phrases complètes
-                - Pour les équations, utilise les balises <math>
-                - Évite le jargon technique inutile
+                - Montre uniquement les étapes essentielles
+                - Indique le niveau au début (Facile/Moyen/Difficile)
+                - Utilise une notation mathématique simple
+                - Pas de texte superflu
+                - Pas de balises <math>
+                - Utilise les symboles: ×, ÷, −, ±, √, ², ³
 
-                Voici l'équation à résoudre:`
-            : `You are an experienced math teacher explaining solutions in a clear and educational way.
-
-                To solve this equation:
-
-                1. Start by writing the equation clearly
-                2. Indicate the level (Easy/Medium/Hard)
-                3. Explain the solution step by step, as in a textbook
-                4. Use natural and educational language
+                Voici l'équation:`
+            : `Solve this mathematical equation concisely:
 
                 RULES:
-                - No "xx" numbering
-                - No uppercase titles
-                - Write naturally, as if explaining to a student
-                - Use complete sentences
-                - For equations, use <math> tags
-                - Avoid unnecessary technical jargon
+                - Show only essential steps
+                - Indicate level at start (Easy/Medium/Hard)
+                - Use simple mathematical notation
+                - No unnecessary text
+                - No <math> tags
+                - Use symbols: ×, ÷, −, ±, √, ², ³
 
-                Here's the equation to solve:`;
+                Here's the equation:`;
 
         const generationConfig = {
             temperature: 0.1,
@@ -317,6 +303,19 @@ async function verifyEquationImage(base64Image) {
 
 // Update the solution formatting
 function formatSolution(solutionText) {
+    // Remove <math> tags
+    solutionText = solutionText.replace(/<\/?math>/g, '');
+    
+    // Remove legibility check and transcription sections
+    solutionText = solutionText.replace(/.*?Level:/s, 'Level:');
+    
+    // Clean up the formatting
+    solutionText = solutionText
+        .replace(/\*\*/g, '') // Remove bold markers
+        .replace(/xx.*?xx/g, '') // Remove xx markers
+        .replace(/\s+/g, ' ') // Remove extra spaces
+        .trim();
+
     // Replace basic math symbols with proper Unicode characters
     const replacements = {
         '\\*': '×',
@@ -335,10 +334,6 @@ function formatSolution(solutionText) {
     Object.entries(replacements).forEach(([key, value]) => {
         solutionText = solutionText.replace(new RegExp(key, 'g'), value);
     });
-
-    // Add warning styling
-    solutionText = solutionText.replace(/⚠️ WARNING:/g, '<span class="warning">⚠️ WARNING:</span>');
-    solutionText = solutionText.replace(/⚠️ ATTENTION:/g, '<span class="warning">⚠️ ATTENTION:</span>');
 
     return solutionText;
 } 
