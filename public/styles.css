@@ -847,3 +847,33 @@ body::before {
         padding: 12px 15px;
     }
 } 
+
+.preview-fade {
+    opacity: 0;
+    transition: opacity 0.3s ease-out;
+}
+
+.preview-fade[style*="display: block"] {
+    opacity: 1;
+}
+
+.verification-section {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.3s ease-out;
+}
+
+.verification-section[style*="display: block"] {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.error {
+    color: var(--neon-pink);
+    background: rgba(255, 0, 255, 0.1);
+    padding: 15px;
+    border-radius: 4px;
+    border-left: 3px solid var(--neon-pink);
+    margin: 10px 0;
+    animation: fadeIn 0.3s ease-out;
+} 

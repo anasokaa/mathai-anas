@@ -228,17 +228,42 @@ function handleImageSelect(event) {
         }
 
         const reader = new FileReader();
-        reader.onload = function(e) {
+        reader.onload = async function(e) {
             const preview = document.getElementById('imagePreview');
             preview.src = e.target.result;
             preview.style.display = 'block';
-            document.getElementById('solveButton').disabled = false;
             
-            // Scroll to preview on mobile
-            if (window.innerWidth <= 768) {
-                setTimeout(() => {
-                    preview.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 100);
+            // Show loading state
+            const loading = document.getElementById('loading');
+            const solution = document.getElementById('solution');
+            loading.style.display = 'block';
+            solution.innerHTML = '';
+
+            try {
+                // Verify and detect equation automatically
+                const base64Image = e.target.result;
+                const isEquation = await verifyEquationImage(base64Image);
+                
+                if (!isEquation) {
+                    throw new Error(FUNNY_MESSAGES[Math.floor(Math.random() * FUNNY_MESSAGES.length)]);
+                }
+
+                // Detect the equation
+                const detectedEquation = await detectEquation(base64Image);
+                
+                // Show verification section
+                loading.style.display = 'none';
+                const verificationSection = document.getElementById('verificationSection');
+                verificationSection.style.display = 'block';
+                document.querySelector('.detected-equation').textContent = detectedEquation;
+                
+                // Scroll to verification section
+                verificationSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                
+            } catch (error) {
+                console.error('Error:', error);
+                loading.style.display = 'none';
+                solution.innerHTML = `<div class="error">Error: ${error.message}</div>`;
             }
         }
         reader.readAsDataURL(file);
@@ -283,15 +308,36 @@ function updateUILanguage(language) {
         uploadButton.textContent = isFrenchlanguage ? 'Importer Image' : 'Upload Image';
     }
     
-    const solveButton = document.querySelector('#solveButton');
-    if (solveButton) {
-        solveButton.textContent = isFrenchlanguage ? 'Résoudre' : 'Decode Equation';
+    // Update verification texts
+    const verificationTitle = document.querySelector('.verification-title');
+    if (verificationTitle) {
+        verificationTitle.textContent = isFrenchlanguage 
+            ? 'Est-ce la bonne équation ?' 
+            : 'Is this the correct equation?';
     }
-    
-    // Update loading text
-    const loadingText = document.getElementById('loadingText');
-    if (loadingText) {
-        loadingText.textContent = isFrenchlanguage ? 'Décodage...' : 'Decoding...';
+
+    const confirmButton = document.getElementById('confirmEquation');
+    if (confirmButton) {
+        confirmButton.textContent = isFrenchlanguage ? 'Oui, résoudre' : 'Yes, solve it';
+    }
+
+    const correctButton = document.getElementById('correctEquation');
+    if (correctButton) {
+        correctButton.textContent = isFrenchlanguage ? 'Non, corriger' : 'No, fix it';
+    }
+
+    const correctionTitle = document.querySelector('.correction-title');
+    if (correctionTitle) {
+        correctionTitle.textContent = isFrenchlanguage 
+            ? 'Entrez l\'équation correcte :' 
+            : 'Enter the correct equation:';
+    }
+
+    const submitCorrection = document.getElementById('submitCorrection');
+    if (submitCorrection) {
+        submitCorrection.textContent = isFrenchlanguage 
+            ? 'Résoudre celle-ci' 
+            : 'Solve this instead';
     }
 }
 
