@@ -79,52 +79,62 @@ async function solveEquation() {
         }
 
         const promptText = language === 'french' 
-            ? `Résous cette équation mathématique de manière structurée.
+            ? `Tu es un professeur de mathématiques résolvant une équation.
 
-                RÈGLES:
-                1. Première ligne: "Équation: [équation]"
-                2. Deuxième ligne: "Niveau: [Facile/Moyen/Difficile]"
-                3. Ensuite, résous étape par étape:
-                   • Une équation par ligne
-                   • Numérote chaque étape
-                   • Ajoute une brève explication
+                FORMAT DE LA SOLUTION:
+
+                1. Commence par "Équation: [équation]"
+                2. Puis "Niveau: [Facile/Moyen/Difficile]"
+                3. Pour chaque étape:
+                   - Écris l'équation sur une nouvelle ligne
+                   - Ajoute l'explication sur la ligne suivante
+                   - Laisse une ligne vide entre chaque étape
                 4. Termine par "Solution: x = [valeur]"
 
-                Format pour chaque étape:
-                [numéro]. [équation]    | [explication]
-
-                Exemple:
+                EXEMPLE:
                 Équation: 2x + 4 = 10
                 Niveau: Facile
 
-                1. 2x + 4 = 10         | Équation initiale
-                2. 2x = 10 - 4         | Soustraction de 4
-                3. 2x = 6              | Simplification
-                4. x = 3               | Division par 2
+                2x + 4 = 10
+                On commence avec l'équation initiale
+
+                2x = 10 - 4
+                On soustrait 4 des deux côtés
+
+                2x = 6
+                On simplifie
+
+                x = 3
+                On divise les deux côtés par 2
 
                 Solution: x = 3`
-            : `Solve this mathematical equation in a structured way.
+            : `You are a math teacher solving an equation.
 
-                RULES:
-                1. First line: "Equation: [equation]"
-                2. Second line: "Level: [Easy/Medium/Hard]"
-                3. Then solve step by step:
-                   • One equation per line
-                   • Number each step
-                   • Add brief explanation
+                SOLUTION FORMAT:
+
+                1. Start with "Equation: [equation]"
+                2. Then "Level: [Easy/Medium/Hard]"
+                3. For each step:
+                   - Write the equation on a new line
+                   - Add explanation on the next line
+                   - Leave an empty line between steps
                 4. End with "Solution: x = [value]"
 
-                Format for each step:
-                [number]. [equation]    | [explanation]
-
-                Example:
+                EXAMPLE:
                 Equation: 2x + 4 = 10
                 Level: Easy
 
-                1. 2x + 4 = 10         | Initial equation
-                2. 2x = 10 - 4         | Subtract 4
-                3. 2x = 6              | Simplify
-                4. x = 3               | Divide by 2
+                2x + 4 = 10
+                Starting with the initial equation
+
+                2x = 10 - 4
+                Subtract 4 from both sides
+
+                2x = 6
+                Simplify
+
+                x = 3
+                Divide both sides by 2
 
                 Solution: x = 3`;
 
@@ -332,16 +342,19 @@ function formatSolution(solutionText) {
     // Remove any HTML or math tags
     solutionText = solutionText.replace(/<[^>]*>/g, '');
     
-    // Split into lines
-    let lines = solutionText.split('\n').map(line => line.trim()).filter(line => line);
+    // Split into lines and clean them
+    let lines = solutionText.split('\n')
+        .map(line => line.trim())
+        .filter(line => line);
     
     // Format the solution with proper HTML structure
     let formattedHtml = '<div class="solution-container">';
     
-    // Process each line
+    let isEquation = true; // Toggle between equation and explanation
+    
     lines.forEach(line => {
         if (line.startsWith('Equation:') || line.startsWith('Équation:')) {
-            formattedHtml += `<div class="equation-initial">${line}</div>`;
+            formattedHtml += `<div class="equation-header">${line}</div>`;
         }
         else if (line.startsWith('Level:') || line.startsWith('Niveau:')) {
             formattedHtml += `<div class="difficulty-label">${line}</div>`;
@@ -349,15 +362,15 @@ function formatSolution(solutionText) {
         else if (line.startsWith('Solution:')) {
             formattedHtml += `<div class="final-solution">${line}</div>`;
         }
-        else if (line.match(/^\d+\./)) {
-            // Split step into equation and explanation
-            let [step, explanation] = line.split('|').map(part => part.trim());
-            formattedHtml += `
-                <div class="solution-step">
-                    <div class="step-number">${step.split('.')[0]}</div>
-                    <div class="step-equation">${step.split('.')[1]}</div>
-                    <div class="step-explanation">${explanation || ''}</div>
+        else {
+            if (isEquation) {
+                formattedHtml += `<div class="step-container">
+                    <div class="step-equation">${line}</div>`;
+            } else {
+                formattedHtml += `<div class="step-explanation">${line}</div>
                 </div>`;
+            }
+            isEquation = !isEquation;
         }
     });
     
