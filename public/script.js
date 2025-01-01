@@ -43,27 +43,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize other features
     setupMobilePreview();
     updateUILanguage(document.getElementById('language').value);
-
-    // Add drag and drop handling
-    const dropZone = document.getElementById('dropZone');
-    
-    // Prevent default drag behaviors
-    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, preventDefaults, false);
-        document.body.addEventListener(eventName, preventDefaults, false);
-    });
-
-    // Handle drop zone highlighting
-    ['dragenter', 'dragover'].forEach(eventName => {
-        dropZone.addEventListener(eventName, highlight, false);
-    });
-
-    ['dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, unhighlight, false);
-    });
-
-    // Handle dropped files
-    dropZone.addEventListener('drop', handleDrop, false);
 });
 
 document.getElementById('imageInput').addEventListener('change', handleImageSelect);
@@ -396,40 +375,4 @@ function formatSolution(solutionText) {
     solutionText = solutionText.replace(/⚠️ ATTENTION:/g, '<span class="warning">⚠️ ATTENTION:</span>');
 
     return solutionText;
-}
-
-function preventDefaults (e) {
-    e.preventDefault();
-    e.stopPropagation();
-}
-
-function highlight(e) {
-    document.getElementById('dropZone').classList.add('drag-over');
-}
-
-function unhighlight(e) {
-    document.getElementById('dropZone').classList.remove('drag-over');
-}
-
-function handleDrop(e) {
-    const dt = e.dataTransfer;
-    const files = dt.files;
-
-    if (files.length > 0) {
-        const file = files[0];
-        if (file.type.startsWith('image/')) {
-            // Create a new File object from the dropped file
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            
-            // Update the file input
-            const fileInput = document.getElementById('imageInput');
-            fileInput.files = dataTransfer.files;
-            
-            // Trigger the handleImageSelect function
-            handleImageSelect({ target: { files: [file] } });
-        } else {
-            alert('Please drop an image file');
-        }
-    }
 } 
