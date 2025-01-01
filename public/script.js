@@ -79,68 +79,42 @@ async function solveEquation() {
         }
 
         const promptText = language === 'french' 
-            ? `Tu es un expert en mathématiques qui analyse et résout des équations avec une précision de livre scolaire.
+            ? `Tu es un professeur de mathématiques expérimenté qui explique les solutions de manière claire et pédagogique.
 
-                ÉTAPES D'ANALYSE:
-                1. VÉRIFICATION DE LISIBILITÉ:
-                   * Si l'écriture n'est pas parfaitement claire, indique immédiatement les caractères ambigus
-                   * Pour chaque symbole ambigu, liste toutes les interprétations possibles
-                   * Demande une confirmation si nécessaire
+                Pour résoudre cette équation:
 
-                2. TRANSCRIPTION:
-                   * Réécris l'équation en utilisant une notation mathématique standard
-                   * Utilise les symboles mathématiques appropriés:
-                     - Multiplier: ×
-                     - Diviser: ÷
-                     - Moins: −
-                     - Plus ou moins: ±
-                     - Racine carrée: √
-                     - Puissance: exposant en petit (²,³)
-                     - Fraction: avec barre horizontale
+                1. Commence par écrire l'équation clairement
+                2. Indique le niveau (Facile/Moyen/Difficile)
+                3. Explique la solution étape par étape, comme dans un manuel scolaire
+                4. Utilise un langage naturel et pédagogique
 
-                3. RÉSOLUTION:
-                   * Niveau: (Facile/Moyen/Difficile)
-                   * Présente la solution comme dans un manuel scolaire
-                   * Utilise des symboles mathématiques propres
-                   * Chaque étape doit être clairement numérotée
-                   * Inclus les propriétés mathématiques utilisées
+                RÈGLES:
+                - Pas de numérotation avec "xx"
+                - Pas de titres en majuscules
+                - Écris naturellement, comme si tu expliquais à un élève
+                - Utilise des phrases complètes
+                - Pour les équations, utilise les balises <math>
+                - Évite le jargon technique inutile
 
-                Si tu as un doute sur un symbole, écris:
-                ⚠️ ATTENTION: [Décris l'ambiguïté et demande une clarification]
+                Voici l'équation à résoudre:`
+            : `You are an experienced math teacher explaining solutions in a clear and educational way.
 
-                Utilise <math> pour les expressions mathématiques.
-                Voici l'équation à analyser:`
-            : `You are a mathematics expert who analyzes and solves equations with textbook precision.
+                To solve this equation:
 
-                ANALYSIS STEPS:
-                1. LEGIBILITY CHECK:
-                   * If the writing isn't perfectly clear, immediately indicate ambiguous characters
-                   * For each ambiguous symbol, list all possible interpretations
-                   * Ask for confirmation if needed
+                1. Start by writing the equation clearly
+                2. Indicate the level (Easy/Medium/Hard)
+                3. Explain the solution step by step, as in a textbook
+                4. Use natural and educational language
 
-                2. TRANSCRIPTION:
-                   * Rewrite the equation using standard mathematical notation
-                   * Use proper mathematical symbols:
-                     - Multiply: ×
-                     - Divide: ÷
-                     - Minus: −
-                     - Plus/Minus: ±
-                     - Square root: √
-                     - Powers: superscript (²,³)
-                     - Fractions: with horizontal bar
+                RULES:
+                - No "xx" numbering
+                - No uppercase titles
+                - Write naturally, as if explaining to a student
+                - Use complete sentences
+                - For equations, use <math> tags
+                - Avoid unnecessary technical jargon
 
-                3. SOLUTION:
-                   * Level: (Easy/Medium/Hard)
-                   * Present the solution like a textbook
-                   * Use clean mathematical symbols
-                   * Each step should be clearly numbered
-                   * Include mathematical properties used
-
-                If you have any doubt about a symbol, write:
-                ⚠️ WARNING: [Describe the ambiguity and ask for clarification]
-
-                Use <math> tags for mathematical expressions.
-                Here's the equation to analyze:`;
+                Here's the equation to solve:`;
 
         const generationConfig = {
             temperature: 0.1,
