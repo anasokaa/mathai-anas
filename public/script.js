@@ -79,28 +79,44 @@ async function solveEquation() {
         }
 
         const promptText = language === 'french' 
-            ? `Résous cette équation de façon concise:
+            ? `Tu es un professeur de mathématiques expliquant la résolution d'équations.
 
-                RÈGLES:
-                - Pour équation FACILE: montre uniquement l'équation et la réponse finale
-                - Pour équation MOYENNE/DIFFICILE: montre les étapes clés
-                - Commence par "Niveau: "
-                - Pas de texte explicatif
-                - Utilise les symboles: ×, ÷, −, =
-                - Écris les équations directement, sans balises
+                STRUCTURE DE LA RÉPONSE:
+                1. Niveau: (Facile/Moyen/Difficile)
+                2. Équation initiale
+                3. Méthode de résolution:
+                   - Explique brièvement la stratégie
+                   - Montre chaque étape clairement
+                   - Utilise des flèches (→) pour montrer la progression
+                   - Indique la propriété utilisée entre parenthèses
+                4. Solution finale soulignée
 
-                Équation:`
-            : `Solve this equation concisely:
+                FORMAT:
+                - Utilise des symboles mathématiques: ×, ÷, −, =
+                - Une étape par ligne
+                - Aligne les égalités
+                - Pas de balises <math>
 
-                RULES:
-                - For EASY equation: show only equation and final answer
-                - For MEDIUM/HARD equation: show key steps
-                - Start with "Level: "
-                - No explanatory text
-                - Use symbols: ×, ÷, −, =
-                - Write equations directly, no tags
+                Résous cette équation:`
+            : `You are a math teacher explaining equation solving.
 
-                Equation:`;
+                RESPONSE STRUCTURE:
+                1. Level: (Easy/Medium/Hard)
+                2. Initial equation
+                3. Solving method:
+                   - Briefly explain the strategy
+                   - Show each step clearly
+                   - Use arrows (→) to show progression
+                   - Indicate the property used in parentheses
+                4. Final solution underlined
+
+                FORMAT:
+                - Use mathematical symbols: ×, ÷, −, =
+                - One step per line
+                - Align equations
+                - No <math> tags
+
+                Solve this equation:`;
 
         const generationConfig = {
             temperature: 0.1,
@@ -303,7 +319,7 @@ async function verifyEquationImage(base64Image) {
 
 // Update the solution formatting
 function formatSolution(solutionText) {
-    // Remove all <math> tags
+    // Remove <math> tags
     solutionText = solutionText.replace(/<\/?math>/g, '');
     
     // Clean up the formatting
@@ -312,9 +328,17 @@ function formatSolution(solutionText) {
         .replace(/xx.*?xx/g, '')
         .replace(/solving the equation/gi, '')
         .replace(/\s+/g, ' ')
-        .replace(/Step \d+:/g, '')
-        .replace(/Therefore,/g, '')
-        .replace(/Thus,/g, '')
+        .replace(/Therefore,/g, '→')
+        .replace(/Thus,/g, '→')
+        .trim();
+
+    // Add proper line breaks and spacing
+    solutionText = solutionText
+        .replace(/(\d+\))/g, '\n$1')  // Add line break before numbered steps
+        .replace(/→/g, '\n→')         // Add line break before arrows
+        .replace(/Level:/g, '\nLevel:')
+        .replace(/Solution:/g, '\nSolution:')
+        .replace(/\n\s+/g, '\n')      // Clean up extra spaces after line breaks
         .trim();
 
     // Replace basic math symbols
