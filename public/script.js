@@ -99,6 +99,46 @@ async function solveEquation() {
     }
 }
 
+// Add this function to create the solution prompt
+function createSolutionPrompt(language, equation) {
+    return language === 'french' 
+        ? `Résous cette équation mathématique:
+            ${equation}
+
+            FORMAT:
+            1. Commence par "Niveau: (Facile/Moyen/Difficile)"
+            2. Pour chaque étape:
+               - Montre l'équation complète
+               - Explique brièvement l'opération
+            3. Termine par la solution finale
+
+            EXEMPLE:
+            Niveau: Facile
+            2x + 4 = 10
+            → 2x = 10 - 4    (soustraction)
+            → 2x = 6         (simplification)
+            → x = 3          (division par 2)
+            ∴ x = 3          (solution finale)`
+        : `Solve this mathematical equation:
+            ${equation}
+
+            FORMAT:
+            1. Start with "Level: (Easy/Medium/Hard)"
+            2. For each step:
+               - Show the complete equation
+               - Briefly explain the operation
+            3. End with the final solution
+
+            EXAMPLE:
+            Level: Easy
+            2x + 4 = 10
+            → 2x = 10 - 4    (subtraction)
+            → 2x = 6         (simplification)
+            → x = 3          (divide by 2)
+            ∴ x = 3          (final solution)`;
+}
+
+// Update solveDetectedEquation function to include response handling
 async function solveDetectedEquation(equation, base64Image = null) {
     const loading = document.getElementById('loading');
     const solution = document.getElementById('solution');
@@ -117,7 +157,12 @@ async function solveDetectedEquation(equation, base64Image = null) {
                 parts: [{
                     text: promptText
                 }]
-            }]
+            }],
+            generationConfig: {
+                temperature: 0.1,
+                topK: 32,
+                topP: 1
+            }
         };
 
         // If we have the original image, include it
@@ -138,9 +183,15 @@ async function solveDetectedEquation(equation, base64Image = null) {
             body: JSON.stringify(requestBody)
         });
 
-        // Process response and show solution
-        // ... (rest of the solution handling code)
+        const data = await response.json();
         
+        if (data.candidates && data.candidates[0]?.content) {
+            let solutionText = data.candidates[0].content.parts[0].text;
+            solutionText = formatSolution(solutionText);
+            solution.innerHTML = solutionText;
+        } else {
+            throw new Error('Invalid response format from API');
+        }
     } catch (error) {
         console.error('Error:', error);
         solution.innerHTML = `<div class="error">Error: ${error.message}</div>`;
