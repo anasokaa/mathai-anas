@@ -17,31 +17,30 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.className = `theme-${savedTheme}`;
     }
     
-    setupMobilePreview();
-    updateUILanguage(document.getElementById('language').value);
-    
-    // Add mobile-specific handling
     const uploadButton = document.getElementById('uploadButton');
     const imageInput = document.getElementById('imageInput');
 
-    // Handle both click and touch events
-    uploadButton.addEventListener('click', (e) => {
+    // Handle file input for both mobile and desktop
+    uploadButton.addEventListener('click', function(e) {
         e.preventDefault();
-        imageInput.click();
-    });
-
-    uploadButton.addEventListener('touchend', (e) => {
-        e.preventDefault();
-        imageInput.click();
-    });
-
-    // Make sure the input is properly handled
-    imageInput.addEventListener('change', handleImageSelect);
-    
-    // Prevent default behavior on mobile
-    imageInput.addEventListener('touchstart', (e) => {
         e.stopPropagation();
+        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+            // For mobile devices, trigger native file picker
+            imageInput.click();
+        } else {
+            // For desktop
+            imageInput.click();
+        }
     });
+
+    // Handle file selection
+    imageInput.addEventListener('change', function(e) {
+        handleImageSelect(e);
+    });
+
+    // Initialize other features
+    setupMobilePreview();
+    updateUILanguage(document.getElementById('language').value);
 });
 
 document.getElementById('imageInput').addEventListener('change', handleImageSelect);
@@ -183,9 +182,14 @@ async function solveEquation() {
 }
 
 function handleImageSelect(event) {
-    event.preventDefault();
     const file = event.target.files[0];
     if (file) {
+        // Check file size
+        if (file.size > 4 * 1024 * 1024) {
+            alert('Image file is too large. Please use an image under 4MB.');
+            return;
+        }
+
         const reader = new FileReader();
         reader.onload = function(e) {
             const preview = document.getElementById('imagePreview');
@@ -195,7 +199,9 @@ function handleImageSelect(event) {
             
             // Scroll to preview on mobile
             if (window.innerWidth <= 768) {
-                preview.scrollIntoView({ behavior: 'smooth' });
+                setTimeout(() => {
+                    preview.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 100);
             }
         }
         reader.readAsDataURL(file);
