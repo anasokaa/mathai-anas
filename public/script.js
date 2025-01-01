@@ -271,19 +271,21 @@ function updateUILanguage(language) {
     const isFrenchlanguage = language === 'french';
     
     // Update button texts
-    document.querySelector('#uploadButton .button-text').textContent = 
-        isFrenchlanguage ? 'Importer Image' : 'Upload Image';
+    const uploadButton = document.querySelector('#uploadButton .button-text');
+    if (uploadButton) {
+        uploadButton.textContent = isFrenchlanguage ? 'Importer Image' : 'Upload Image';
+    }
     
-    document.querySelector('#solveButton').textContent = 
-        isFrenchlanguage ? 'Résoudre' : 'Decode Equation';
+    const solveButton = document.querySelector('#solveButton');
+    if (solveButton) {
+        solveButton.textContent = isFrenchlanguage ? 'Résoudre' : 'Decode Equation';
+    }
     
     // Update loading text
-    document.getElementById('loadingText').textContent = 
-        isFrenchlanguage ? 'Décodage...' : 'Decoding...';
-    
-    // Update drop zone text
-    document.querySelector('.drop-text').textContent = 
-        isFrenchlanguage ? 'ou déposez votre image ici' : 'or drag and drop your image here';
+    const loadingText = document.getElementById('loadingText');
+    if (loadingText) {
+        loadingText.textContent = isFrenchlanguage ? 'Décodage...' : 'Decoding...';
+    }
 }
 
 // Theme handling
@@ -343,12 +345,12 @@ async function verifyEquationImage(base64Image) {
 function formatSolution(solutionText) {
     // Replace basic math symbols with proper Unicode characters
     const replacements = {
-        '*': '×',
-        '/': '÷',
-        '+-': '±',
+        '\\*': '×',
+        '\\/': '÷',
+        '\\+-': '±',
         'sqrt': '√',
-        '^2': '²',
-        '^3': '³',
+        '\\^2': '²',
+        '\\^3': '³',
         '->': '→',
         '<=': '≤',
         '>=': '≥',
