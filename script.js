@@ -1,8 +1,22 @@
 const API_KEY = 'AIzaSyBya-gL9tn8Gp5Tl5Rzg3Dk5ke2yzWeGjY';
 const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
+// Theme handling
+document.addEventListener('DOMContentLoaded', () => {
+    // Restore preferred theme
+    const savedTheme = localStorage.getItem('preferred-theme') || 'cyberpunk';
+    document.getElementById('theme').value = savedTheme;
+    document.body.className = `theme-${savedTheme}`;
+
+    // Setup theme change listener
+    document.getElementById('theme').addEventListener('change', (e) => {
+        const theme = e.target.value;
+        document.body.className = `theme-${theme}`;
+        localStorage.setItem('preferred-theme', theme);
+    });
+});
+
 document.getElementById('imageInput').addEventListener('change', handleImageSelect);
-document.getElementById('solveButton').addEventListener('click', solveEquation);
 
 function handleImageSelect(event) {
     const file = event.target.files[0];
@@ -17,15 +31,13 @@ function handleImageSelect(event) {
             const preview = document.getElementById('imagePreview');
             preview.src = e.target.result;
             preview.style.display = 'block';
-            document.getElementById('solveButton').disabled = false;
+            processEquation(file);
         }
         reader.readAsDataURL(file);
     }
 }
 
-async function solveEquation() {
-    const imageInput = document.getElementById('imageInput');
-    const file = imageInput.files[0];
+async function processEquation(file) {
     const loading = document.getElementById('loading');
     const solution = document.getElementById('solution');
     
@@ -37,7 +49,7 @@ async function solveEquation() {
         const equation = await detectEquation(base64Image);
         const solvedEquation = await solveEquation(equation);
         
-        solution.innerHTML = marked.parse(solvedEquation);
+        solution.innerHTML = solvedEquation;
     } catch (error) {
         console.error('Error:', error);
         solution.innerHTML = `<div class="error">Error: ${error.message}</div>`;
