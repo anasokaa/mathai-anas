@@ -3,48 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MathAI Anas</title>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap">
+    <title>Math Equation Solver</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <div class="version-tag">v1.9.1</div>
-        <h1>MathAI Anas</h1>
-        <div class="interface-section">
-            <h2>INTERFACE</h2>
-            <select id="language" class="cyber-select">
-                <option value="english">English</option>
-                <option value="french">Français</option>
-            </select>
-        </div>
-
-        <div class="theme-section">
-            <h2>THEME</h2>
-            <select id="theme" class="cyber-select">
-                <option value="cyberpunk">Cyberpunk</option>
-                <option value="industrial">Industrial</option>
-            </select>
-        </div>
-
+        <h1>Math Equation Solver</h1>
         <div class="upload-section">
-            <div class="upload-border">
-                <button class="upload-button" onclick="document.getElementById('imageInput').click()">
-                    📸 UPLOAD EQUATION
-                </button>
-            </div>
-            <input type="file" id="imageInput" accept="image/*" style="display: none;">
+            <input type="file" id="imageInput" accept="image/*">
+            <button id="solveButton">Solve Equation</button>
         </div>
-
         <div class="preview-section">
             <img id="imagePreview" style="display: none;">
         </div>
-
         <div class="result-section">
-            <div id="loading" style="display: none;">PROCESSING...</div>
+            <div id="loading" style="display: none;">Solving...</div>
             <div id="solution"></div>
         </div>
     </div>
     <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </body>
 </html> 
