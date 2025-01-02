@@ -154,7 +154,17 @@ async function solveDetectedEquation(equation, base64Image = null) {
         if (data.candidates && data.candidates[0]?.content) {
             let solutionText = data.candidates[0].content.parts[0].text;
             solutionText = formatSolution(solutionText);
-            solution.innerHTML = solutionText;
+            solution.innerHTML = `
+                ${solutionText}
+                <div class="solve-another-container">
+                    <button id="solveAnother" class="cyber-button solve-another">
+                        <span class="icon">🔄</span>
+                        <span class="button-text">Solve Another Equation</span>
+                    </button>
+                </div>
+            `;
+
+            document.getElementById('solveAnother').addEventListener('click', resetApp);
         } else {
             throw new Error('Invalid response format from API');
         }
@@ -421,4 +431,37 @@ async function detectEquation(base64Image) {
         console.error('Error detecting equation:', error);
         throw error;
     }
+}
+
+// Add new function to reset the app state
+function resetApp() {
+    // Clear the image preview
+    const preview = document.getElementById('imagePreview');
+    preview.src = '';
+    preview.style.display = 'none';
+
+    // Clear the solution
+    document.getElementById('solution').innerHTML = '';
+
+    // Hide verification section
+    document.getElementById('verificationSection').style.display = 'none';
+
+    // Clear the equation input
+    const equationInput = document.getElementById('equationInput');
+    if (equationInput) {
+        equationInput.value = '';
+    }
+
+    // Reset file input
+    document.getElementById('imageInput').value = '';
+
+    // Scroll to top smoothly
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Optional: Add a small delay before showing the upload button animation
+    setTimeout(() => {
+        const uploadZone = document.querySelector('.upload-zone');
+        uploadZone.classList.add('highlight');
+        setTimeout(() => uploadZone.classList.remove('highlight'), 1000);
+    }, 500);
 } 
