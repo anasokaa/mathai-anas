@@ -960,7 +960,7 @@ body::before {
 
 .content-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 0.4fr 0.6fr;
     gap: 30px;
     margin-top: 20px;
 }
@@ -973,17 +973,20 @@ body::before {
 }
 
 .preview-container {
-    min-height: 200px;
+    min-height: 150px;
+    max-height: 300px;
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
 }
 
 .preview-container img {
     max-width: 100%;
-    max-height: 400px;
+    max-height: 300px;
     border-radius: 8px;
     border: 2px solid var(--neon-pink);
+    object-fit: contain;
 }
 
 .verification-section {
@@ -1109,5 +1112,49 @@ body::before {
     100% {
         transform: scale(1);
         border-color: var(--neon-blue);
+    }
+} 
+
+/* Enhance solution column */
+.solution-column {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 12px;
+    padding: 25px;
+    border: 1px solid var(--neon-blue);
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+/* Style the scrollbar for the solution column */
+.solution-column::-webkit-scrollbar {
+    width: 8px;
+}
+
+.solution-column::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+.solution-column::-webkit-scrollbar-thumb {
+    background: var(--neon-blue);
+    border-radius: 4px;
+}
+
+.solution-column::-webkit-scrollbar-thumb:hover {
+    background: var(--neon-pink);
+}
+
+/* Adjust mobile layout */
+@media (max-width: 768px) {
+    .content-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .preview-column {
+        max-height: 250px;
+    }
+
+    .solution-column {
+        max-height: none;
     }
 } 
