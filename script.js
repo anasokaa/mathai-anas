@@ -1,35 +1,21 @@
 const API_KEY = 'AIzaSyBya-gL9tn8Gp5Tl5Rzg3Dk5ke2yzWeGjY';
 const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
-
-// Event Listeners
-document.addEventListener('DOMContentLoaded', () => {
-    // Restore preferred theme
-    const savedTheme = localStorage.getItem('preferred-theme');
-    if (savedTheme) {
-        document.getElementById('theme').value = savedTheme;
-        document.body.className = `theme-${savedTheme}`;
-    }
-    
-    // Setup language change
-    document.getElementById('language').addEventListener('change', (e) => {
-        updateUILanguage(e.target.value);
-    });
-
-    // Setup theme change
-    document.getElementById('theme').addEventListener('change', (e) => {
-        const theme = e.target.value;
-        document.body.className = `theme-${theme}`;
-        localStorage.setItem('preferred-theme', theme);
-    });
-});
+const VALID_EQUATION_CONFIDENCE = 0.7;
+const FUNNY_MESSAGES = [
+    "That's a lovely picture... but MathAI Anas needs equations! 🤔",
+    "Unless you're trying to calculate the cuteness of that image, I need an equation! 📐",
+    "Nice shot! But my mathematical powers are useless here. Try an equation! ✨",
+    "I'm MathAI Anas, not an art critic! Let's see some equations! 🎨➗",
+    "Hmm... I can't quite make out the equation. Could you try a clearer photo? 📸",
+    "The equation seems a bit blurry. A clearer shot would help me solve it better! 🔍"
+];
 
 document.getElementById('imageInput').addEventListener('change', handleImageSelect);
+document.getElementById('solveButton').addEventListener('click', solveEquation);
 
-// Handle file selection
 function handleImageSelect(event) {
     const file = event.target.files[0];
     if (file) {
-        // Check file size
         if (file.size > 4 * 1024 * 1024) {
             alert('Image file is too large. Please use an image under 4MB.');
             return;
@@ -40,33 +26,15 @@ function handleImageSelect(event) {
             const preview = document.getElementById('imagePreview');
             preview.src = e.target.result;
             preview.style.display = 'block';
-            
-            // Process the equation
-            processEquation(file);
+            document.getElementById('solveButton').disabled = false;
         }
         reader.readAsDataURL(file);
     }
 }
 
-// Update UI language
-function updateUILanguage(language) {
-    const isFrenchlanguage = language === 'french';
-    
-    // Update button text
-    const uploadButton = document.querySelector('.upload-button');
-    if (uploadButton) {
-        uploadButton.textContent = isFrenchlanguage ? '📸 IMPORTER ÉQUATION' : '📸 UPLOAD EQUATION';
-    }
-
-    // Update loading text
-    const loadingText = document.getElementById('loading');
-    if (loadingText) {
-        loadingText.textContent = isFrenchlanguage ? 'TRAITEMENT...' : 'PROCESSING...';
-    }
-}
-
-// Process equation image
-async function processEquation(file) {
+async function solveEquation() {
+    const imageInput = document.getElementById('imageInput');
+    const file = imageInput.files[0];
     const loading = document.getElementById('loading');
     const solution = document.getElementById('solution');
     
@@ -76,9 +44,9 @@ async function processEquation(file) {
     try {
         const base64Image = await getBase64(file);
         const equation = await detectEquation(base64Image);
-        const solvedEquation = await solveEquation(equation, base64Image);
+        const solvedEquation = await solveEquation(equation);
         
-        solution.innerHTML = formatSolution(solvedEquation);
+        solution.innerHTML = marked.parse(solvedEquation);
     } catch (error) {
         console.error('Error:', error);
         solution.innerHTML = `<div class="error">Error: ${error.message}</div>`;
@@ -87,7 +55,6 @@ async function processEquation(file) {
     }
 }
 
-// Convert file to base64
 function getBase64(file) {
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -97,7 +64,6 @@ function getBase64(file) {
     });
 }
 
-// Detect equation in image
 async function detectEquation(base64Image) {
     const response = await fetch(`${API_URL}?key=${API_KEY}`, {
         method: 'POST',
@@ -114,12 +80,7 @@ async function detectEquation(base64Image) {
                         data: base64Image.split(',')[1]
                     }
                 }]
-            }],
-            generationConfig: {
-                temperature: 0.1,
-                topK: 32,
-                topP: 1
-            }
+            }]
         })
     });
 
@@ -127,15 +88,7 @@ async function detectEquation(base64Image) {
     return data.candidates[0].content.parts[0].text.trim();
 }
 
-// Solve equation
-async function solveEquation(equation, base64Image) {
-    const language = document.getElementById('language').value;
-    const promptText = language === 'french' 
-        ? `Résous cette équation mathématique: ${equation}
-           Montre chaque étape du calcul.`
-        : `Solve this mathematical equation: ${equation}
-           Show each step of the solution.`;
-
+async function solveEquation(equation) {
     const response = await fetch(`${API_URL}?key=${API_KEY}`, {
         method: 'POST',
         headers: {
@@ -144,24 +97,12 @@ async function solveEquation(equation, base64Image) {
         body: JSON.stringify({
             contents: [{
                 parts: [{
-                    text: promptText
+                    text: `Solve this mathematical equation step by step: ${equation}`
                 }]
-            }],
-            generationConfig: {
-                temperature: 0.1,
-                topK: 32,
-                topP: 1
-            }
+            }]
         })
     });
 
     const data = await response.json();
     return data.candidates[0].content.parts[0].text;
-}
-
-// Format solution
-function formatSolution(text) {
-    return text.split('\n').map(line => 
-        `<div class="solution-line">${line}</div>`
-    ).join('');
 } 
