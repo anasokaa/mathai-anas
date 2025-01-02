@@ -58,3 +58,73 @@ button:hover {
     margin: 20px 0;
     color: #00fff9;
 }
+
+.theme-select {
+    margin: 10px 0;
+    padding: 5px;
+    background: #333;
+    color: #00fff9;
+    border: 1px solid #00fff9;
+}
+
+.verification-section {
+    margin: 20px 0;
+    padding: 15px;
+    background: rgba(0, 255, 249, 0.1);
+    border-radius: 8px;
+}
+
+.step {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: rgba(0, 0, 0, 0.2);
+    border-left: 3px solid #00fff9;
+}
+
+.step-number {
+    color: #00fff9;
+    font-weight: bold;
+}
+
+.step-equation {
+    font-family: 'Courier New', monospace;
+    color: #fff;
+    margin: 10px 0;
+    padding: 5px;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+.step-explanation {
+    color: #aaa;
+    margin-top: 5px;
+}
+
+.final-solution {
+    margin-top: 20px;
+    padding: 15px;
+    background: rgba(0, 255, 102, 0.1);
+    color: #0f6;
+    font-weight: bold;
+    text-align: center;
+}
+
+/* Industrial theme */
+.theme-industrial {
+    --neon-color: #ffd700;
+    --accent-color: #ff4500;
+}
+
+.theme-industrial button {
+    background-color: #444;
+    border-color: var(--neon-color);
+    color: var(--neon-color);
+}
+
+.theme-industrial .step-number {
+    color: var(--neon-color);
+}
+
+.theme-industrial .final-solution {
+    background: rgba(255, 215, 0, 0.1);
+    color: var(--neon-color);
+}
