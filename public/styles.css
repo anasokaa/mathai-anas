@@ -945,6 +945,10 @@ body::before {
     border-radius: 12px;
     border: 2px dashed var(--neon-blue);
     transition: all 0.3s ease;
+    aspect-ratio: 16/9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .upload-zone:hover {
@@ -963,30 +967,33 @@ body::before {
     grid-template-columns: 0.4fr 0.6fr;
     gap: 30px;
     margin-top: 20px;
+    align-items: start;
 }
 
-.preview-column, .solution-column {
+.preview-column {
     background: rgba(0, 0, 0, 0.2);
     border-radius: 12px;
-    padding: 20px;
-    border: 1px solid var(--neon-blue);
+    border: 2px dashed var(--neon-blue);
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    padding: 0;
 }
 
 .preview-container {
-    min-height: 150px;
-    max-height: 300px;
+    width: 100%;
+    height: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    overflow: hidden;
+    background: rgba(0, 0, 0, 0.2);
 }
 
 .preview-container img {
     max-width: 100%;
-    max-height: 300px;
+    max-height: 100%;
+    object-fit: contain;
     border-radius: 8px;
     border: 2px solid var(--neon-pink);
-    object-fit: contain;
 }
 
 .verification-section {
@@ -1043,6 +1050,10 @@ body::before {
 
     .cyber-button {
         width: 100%;
+    }
+
+    .upload-zone, .preview-column {
+        aspect-ratio: 4/3;
     }
 }
 
