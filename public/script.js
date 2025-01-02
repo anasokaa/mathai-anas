@@ -26,34 +26,32 @@ document.addEventListener('DOMContentLoaded', () => {
     uploadButton.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
-        if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-            // For mobile devices, trigger native file picker
-            imageInput.click();
-        } else {
-            // For desktop
-            imageInput.click();
-        }
+        imageInput.click();
     });
 
     // Handle file selection
-    imageInput.addEventListener('change', function(e) {
-        handleImageSelect(e);
+    imageInput.addEventListener('change', handleImageSelect);
+
+    // Handle equation verification buttons
+    document.getElementById('confirmEquation').addEventListener('click', function() {
+        const detectedEquation = document.querySelector('.detected-equation').textContent;
+        solveDetectedEquation(detectedEquation);
     });
 
-    // Initialize other features
-    setupMobilePreview();
-    updateUILanguage(document.getElementById('language').value);
+    document.getElementById('correctEquation').addEventListener('click', function() {
+        document.querySelector('.verification-container').style.display = 'none';
+        document.querySelector('.correction-container').style.display = 'block';
+    });
 
-    // Ajouter l'event listener pour le bouton de soumission de correction
-    document.getElementById('submitCorrection').addEventListener('click', () => {
+    // Handle manual equation input
+    document.getElementById('submitCorrection').addEventListener('click', function() {
         const correctedEquation = document.getElementById('equationInput').value.trim();
         if (correctedEquation) {
             solveDetectedEquation(correctedEquation);
         }
     });
 
-    // Ajouter l'event listener pour la touche Enter dans le champ de texte
-    document.getElementById('equationInput').addEventListener('keypress', (e) => {
+    document.getElementById('equationInput').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') {
             const correctedEquation = e.target.value.trim();
             if (correctedEquation) {
@@ -61,61 +59,11 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
     });
+
+    // Initialize other features
+    setupMobilePreview();
+    updateUILanguage(document.getElementById('language').value);
 });
-
-document.getElementById('imageInput').addEventListener('change', handleImageSelect);
-document.getElementById('solveButton').addEventListener('click', solveEquation);
-
-async function solveEquation() {
-    const imageInput = document.getElementById('imageInput');
-    const file = imageInput.files[0];
-    const loading = document.getElementById('loading');
-    const solution = document.getElementById('solution');
-    const verificationSection = document.getElementById('verificationSection');
-    
-    loading.style.display = 'block';
-    solution.innerHTML = '';
-    verificationSection.style.display = 'none';
-
-    try {
-        const base64Image = await getBase64(file);
-        const isEquation = await verifyEquationImage(base64Image);
-        
-        if (!isEquation) {
-            throw new Error(FUNNY_MESSAGES[Math.floor(Math.random() * FUNNY_MESSAGES.length)]);
-        }
-
-        // Detect the equation
-        const detectedEquation = await detectEquation(base64Image);
-        
-        // Show verification section
-        loading.style.display = 'none';
-        verificationSection.style.display = 'block';
-        document.querySelector('.detected-equation').textContent = detectedEquation;
-        
-        // Handle verification buttons
-        document.getElementById('confirmEquation').onclick = () => {
-            solveDetectedEquation(detectedEquation, base64Image);
-        };
-        
-        document.getElementById('correctEquation').onclick = () => {
-            document.querySelector('.verification-container').style.display = 'none';
-            document.querySelector('.correction-container').style.display = 'block';
-        };
-        
-        document.getElementById('submitCorrection').onclick = () => {
-            const correctedEquation = document.getElementById('equationInput').value.trim();
-            if (correctedEquation) {
-                solveDetectedEquation(correctedEquation);
-            }
-        };
-
-    } catch (error) {
-        console.error('Error:', error);
-        loading.style.display = 'none';
-        solution.innerHTML = `<div class="error">Error: ${error.message}</div>`;
-    }
-}
 
 // Add this function to create the solution prompt
 function createSolutionPrompt(language, equation) {
