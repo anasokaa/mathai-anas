@@ -46,7 +46,7 @@ async function solveEquation() {
         const equation = await detectEquation(base64Image);
         const solvedEquation = await solveEquation(equation);
         
-        solution.innerHTML = marked.parse(solvedEquation);
+        solution.innerHTML = solvedEquation;
     } catch (error) {
         console.error('Error:', error);
         solution.innerHTML = `<div class="error">Error: ${error.message}</div>`;
@@ -97,12 +97,61 @@ async function solveEquation(equation) {
         body: JSON.stringify({
             contents: [{
                 parts: [{
-                    text: `Solve this mathematical equation step by step: ${equation}`
+                    text: `Solve this mathematical equation step by step:
+                    ${equation}
+                    
+                    Format your response like this:
+                    1. **Step description:**
+                    Equation
+                    This simplifies to:
+                    Result
+                    
+                    2. **Next step:**
+                    Continue equation
+                    This simplifies to:
+                    Result
+                    
+                    Therefore, the solution is [final answer]`
                 }]
             }]
         })
     });
 
     const data = await response.json();
-    return data.candidates[0].content.parts[0].text;
+    return formatSolution(data.candidates[0].content.parts[0].text);
+}
+
+function formatSolution(text) {
+    const steps = text.split('\n').filter(line => line.trim());
+    let html = '<div class="solution-container">';
+    
+    let currentStep = null;
+    
+    for (const line of steps) {
+        if (line.match(/^\d+\./)) {
+            // New step
+            if (currentStep) {
+                html += '</div>';
+            }
+            currentStep = line;
+            html += `<div class="step">
+                    <div class="step-number">${line}</div>`;
+        } else if (line.includes('Therefore')) {
+            // Final solution
+            html += `<div class="final-solution">${line}</div>`;
+        } else if (line.includes('simplifies to')) {
+            // Step explanation
+            html += `<div class="step-explanation">${line}</div>`;
+        } else {
+            // Equation
+            html += `<div class="step-equation">${line}</div>`;
+        }
+    }
+    
+    if (currentStep) {
+        html += '</div>';
+    }
+    
+    html += '</div>';
+    return html;
 } 

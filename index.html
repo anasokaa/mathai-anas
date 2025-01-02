@@ -3,28 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Equation Solver</title>
+    <title>MathAI Anas</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <h1>Math Equation Solver</h1>
-        
+        <h1>MathAI Anas</h1>
         <div class="upload-section">
+            <button class="upload-button" onclick="document.getElementById('imageInput').click()">
+                📸 Upload Equation
+            </button>
             <input type="file" id="imageInput" accept="image/*">
-            <button id="solveButton">Solve Equation</button>
         </div>
-
         <div class="preview-section">
             <img id="imagePreview" style="display: none;">
         </div>
-
         <div class="result-section">
-            <div id="loading" style="display: none;">Solving...</div>
+            <div id="loading" style="display: none;">Processing...</div>
             <div id="solution"></div>
         </div>
     </div>
     <script src="script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </body>
 </html> 
