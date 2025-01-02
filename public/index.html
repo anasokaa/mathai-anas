@@ -11,63 +11,81 @@
 </head>
 <body>
     <div class="container">
-        <div class="version-tag">v1.8.1</div>
+        <div class="version-tag">v1.9.0</div>
         <div class="cyber-header">
             <h1>MathAI Anas</h1>
             <div class="cyber-line"></div>
         </div>
-        <div class="control-panel">
-            <div class="language-select">
-                <label for="language">Interface Language:</label>
+        
+        <!-- Control Panel in a Grid Layout -->
+        <div class="control-grid">
+            <div class="control-item">
+                <label for="language">Interface</label>
                 <select id="language" class="cyber-select">
                     <option value="english">English</option>
                     <option value="french">Français</option>
                 </select>
             </div>
-            <div class="theme-select">
-                <label for="theme">Theme:</label>
+            
+            <div class="control-item">
+                <label for="theme">Theme</label>
                 <select id="theme" class="cyber-select">
                     <option value="cyberpunk">Cyberpunk</option>
                     <option value="industrial">Industrial</option>
                 </select>
             </div>
-            <div class="upload-section">
-                <div id="dropZone" class="drop-zone">
-                    <div class="input-methods">
-                        <button id="uploadButton" class="cyber-button secondary">
-                            <span class="icon">📁</span>
-                            <span class="button-text">Upload Image</span>
-                        </button>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Upload Section -->
+            <div class="upload-zone">
+                <button id="uploadButton" class="cyber-button upload-btn">
+                    <span class="icon">📸</span>
+                    <span class="button-text">Upload Equation</span>
+                </button>
+                <input type="file" id="imageInput" accept="image/*" style="display: none;">
+            </div>
+
+            <!-- Two Column Layout for Preview and Solution -->
+            <div class="content-grid">
+                <!-- Left Column: Preview -->
+                <div class="preview-column">
+                    <div class="preview-container">
+                        <img id="imagePreview" class="preview-fade" style="display: none;">
                     </div>
                 </div>
-                <input type="file" id="imageInput" accept="image/*" class="cyber-file" style="display: none;">
-            </div>
-            <div class="preview-section">
-                <img id="imagePreview" class="preview-fade" style="display: none;">
-            </div>
-            <div class="result-section">
-                <div id="loading" class="cyber-loading" style="display: none;">
-                    <span class="loader"></span>
-                    <span id="loadingText">Decoding...</span>
-                </div>
-                <div id="verificationSection" class="verification-section" style="display: none;">
-                    <div class="verification-container">
-                        <h3 class="verification-title">Is this the correct equation?</h3>
-                        <div class="detected-equation"></div>
-                        <div class="verification-buttons">
-                            <button id="confirmEquation" class="cyber-button confirm">Yes, solve it</button>
-                            <button id="correctEquation" class="cyber-button edit">No, let me fix it</button>
+
+                <!-- Right Column: Solution -->
+                <div class="solution-column">
+                    <!-- Loading Indicator -->
+                    <div id="loading" class="cyber-loading" style="display: none;">
+                        <div class="loader"></div>
+                        <span id="loadingText">Processing equation...</span>
+                    </div>
+
+                    <!-- Verification Section -->
+                    <div id="verificationSection" class="verification-section" style="display: none;">
+                        <div class="verification-container">
+                            <h3 class="verification-title">Is this the correct equation?</h3>
+                            <div class="detected-equation"></div>
+                            <div class="verification-buttons">
+                                <button id="confirmEquation" class="cyber-button confirm">Yes, solve it</button>
+                                <button id="correctEquation" class="cyber-button edit">No, fix it</button>
+                            </div>
+                        </div>
+                        <div class="correction-container" style="display: none;">
+                            <h3 class="correction-title">Enter the correct equation:</h3>
+                            <div class="correction-input-container">
+                                <input type="text" id="equationInput" class="cyber-input" placeholder="Type the equation here...">
+                                <button id="submitCorrection" class="cyber-button confirm">Solve this instead</button>
+                            </div>
                         </div>
                     </div>
-                    <div class="correction-container" style="display: none;">
-                        <h3 class="correction-title">Enter the correct equation:</h3>
-                        <div class="correction-input-container">
-                            <input type="text" id="equationInput" class="cyber-input" placeholder="Type the equation here...">
-                            <button id="submitCorrection" class="cyber-button confirm">Solve this instead</button>
-                        </div>
-                    </div>
+
+                    <!-- Solution Display -->
+                    <div id="solution" class="cyber-solution"></div>
                 </div>
-                <div id="solution" class="cyber-solution"></div>
             </div>
         </div>
     </div>
