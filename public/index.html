@@ -3,93 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://generativelanguage.googleapis.com; img-src 'self' data: blob: https:; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://generativelanguage.googleapis.com;">
-    <title>MathAI Anas</title>
+    <meta name="description" content="MathAI Anas - Solve mathematical equations instantly using AI">
+    <meta name="theme-color" content="#00fff9">
+    <title>MathAI Anas | Smart Math Solver</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap">
     <link rel="stylesheet" href="styles.css">
     <base href="/mathai-anas/">
 </head>
 <body>
-    <div class="container">
-        <div class="version-tag">v1.9.4</div>
-        <div class="cyber-header">
-            <h1>MathAI Anas</h1>
-            <div class="cyber-line"></div>
-        </div>
-        
-        <!-- Control Panel in a Grid Layout -->
-        <div class="control-grid">
-            <div class="control-item">
-                <label for="language">Interface</label>
-                <select id="language" class="cyber-select">
-                    <option value="english">English</option>
-                    <option value="french">Français</option>
-                </select>
+    <div class="app-container">
+        <!-- Floating Settings Button -->
+        <button id="settingsToggle" class="settings-toggle">
+            <span class="icon">⚙️</span>
+        </button>
+
+        <!-- Settings Panel (Initially Hidden) -->
+        <div id="settingsPanel" class="settings-panel" style="display: none;">
+            <div class="settings-header">
+                <h3>Settings</h3>
+                <button id="closeSettings" class="close-button">×</button>
             </div>
-            
-            <div class="control-item">
-                <label for="theme">Theme</label>
-                <select id="theme" class="cyber-select">
-                    <option value="cyberpunk">Cyberpunk</option>
-                    <option value="industrial">Industrial</option>
-                </select>
+            <div class="settings-content">
+                <div class="setting-item">
+                    <label for="language">Interface Language</label>
+                    <select id="language" class="cyber-select">
+                        <option value="english">English</option>
+                        <option value="french">Français</option>
+                    </select>
+                </div>
+                <div class="setting-item">
+                    <label for="theme">Visual Theme</label>
+                    <select id="theme" class="cyber-select">
+                        <option value="cyberpunk">Cyberpunk</option>
+                        <option value="industrial">Industrial</option>
+                    </select>
+                </div>
             </div>
         </div>
 
-        <!-- Main Content Area -->
-        <div class="main-content">
-            <!-- Upload Section -->
-            <div class="upload-zone">
-                <button id="uploadButton" class="cyber-button upload-btn">
-                    <span class="icon">📸</span>
-                    <span class="button-text">Upload Equation</span>
-                </button>
+        <!-- Main Content -->
+        <main class="main-container">
+            <header class="app-header">
+                <h1>MathAI Anas</h1>
+                <p class="tagline">Solve Any Math Equation Instantly</p>
+            </header>
+
+            <!-- Initial Upload State -->
+            <div id="initialState" class="upload-state active">
+                <div class="upload-zone" id="dropZone">
+                    <div class="upload-content">
+                        <div class="upload-icon">📸</div>
+                        <h2>Upload Your Equation</h2>
+                        <p>Take a photo or upload an image of your equation</p>
+                        <button id="uploadButton" class="cyber-button primary">
+                            <span class="icon">📤</span>
+                            <span class="button-text">Choose Image</span>
+                        </button>
+                    </div>
+                </div>
                 <input type="file" id="imageInput" accept="image/*" style="display: none;">
             </div>
 
-            <!-- Two Column Layout for Preview and Solution -->
-            <div class="content-grid">
-                <!-- Left Column: Preview -->
-                <div class="preview-column">
-                    <div class="preview-container">
-                        <img id="imagePreview" class="preview-fade" style="display: none;">
-                    </div>
-                </div>
-
-                <!-- Right Column: Solution -->
-                <div class="solution-column">
-                    <!-- Loading Indicator -->
-                    <div id="loading" class="cyber-loading" style="display: none;">
-                        <div class="loader"></div>
-                        <span id="loadingText">Processing equation...</span>
-                    </div>
-
-                    <!-- Verification Section -->
-                    <div id="verificationSection" class="verification-section" style="display: none;">
-                        <div class="verification-container">
-                            <h3 class="verification-title">Is this the correct equation?</h3>
-                            <div class="detected-equation"></div>
-                            <div class="verification-buttons">
-                                <button id="confirmEquation" class="cyber-button confirm">Yes, solve it</button>
-                                <button id="correctEquation" class="cyber-button edit">No, fix it</button>
-                            </div>
-                        </div>
-                        <div class="correction-container" style="display: none;">
-                            <h3 class="correction-title">Enter the correct equation:</h3>
-                            <div class="correction-input-container">
-                                <input type="text" id="equationInput" class="cyber-input" placeholder="Type the equation here...">
-                                <button id="submitCorrection" class="cyber-button confirm">Solve this instead</button>
-                            </div>
+            <!-- Processing State -->
+            <div id="processingState" class="processing-state" style="display: none;">
+                <div class="preview-grid">
+                    <div class="preview-section">
+                        <div class="preview-container">
+                            <img id="imagePreview" class="preview-fade" alt="Equation preview">
                         </div>
                     </div>
+                    <div class="solution-section">
+                        <!-- Loading State -->
+                        <div id="loading" class="loading-container" style="display: none;">
+                            <div class="loader"></div>
+                            <p id="loadingText">Analyzing equation...</p>
+                        </div>
 
-                    <!-- Solution Display -->
-                    <div id="solution" class="cyber-solution"></div>
+                        <!-- Verification State -->
+                        <div id="verificationSection" class="verification-section" style="display: none;">
+                            <div class="verification-container">
+                                <h3>Is this the correct equation?</h3>
+                                <div class="detected-equation"></div>
+                                <div class="action-buttons">
+                                    <button id="confirmEquation" class="cyber-button confirm">
+                                        <span class="icon">✓</span>
+                                        <span>Yes, solve it</span>
+                                    </button>
+                                    <button id="correctEquation" class="cyber-button edit">
+                                        <span class="icon">✎</span>
+                                        <span>No, fix it</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Manual Correction -->
+                            <div class="correction-container" style="display: none;">
+                                <h3>Enter the correct equation:</h3>
+                                <div class="input-group">
+                                    <input type="text" id="equationInput" 
+                                           class="cyber-input" 
+                                           placeholder="Example: 2x + 5 = 10">
+                                    <button id="submitCorrection" class="cyber-button confirm">
+                                        <span class="icon">→</span>
+                                        <span>Solve</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Solution Display -->
+                        <div id="solution" class="solution-container"></div>
+                    </div>
                 </div>
             </div>
-        </div>
+        </main>
+
+        <!-- Version Tag -->
+        <div class="version-tag">v2.0.0</div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html> 
