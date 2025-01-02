@@ -3,25 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Math Equation Solver</title>
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://generativelanguage.googleapis.com; img-src 'self' data: blob: https:; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://generativelanguage.googleapis.com;">
+    <title>MathAI Anas</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap">
     <link rel="stylesheet" href="styles.css">
+    <base href="/mathai-anas/">
 </head>
 <body>
     <div class="container">
-        <h1>Math Equation Solver</h1>
+        <div class="version-tag">v1.9.0</div>
+        <div class="cyber-header">
+            <h1>MathAI Anas</h1>
+            <div class="cyber-line"></div>
+        </div>
+        <div class="control-panel">
+            <div class="language-select">
+                <label for="language">Interface Language:</label>
+                <select id="language" class="cyber-select">
+                    <option value="english">English</option>
+                    <option value="french">Français</option>
+                </select>
+            </div>
+            <div class="theme-select">
+                <label for="theme">Theme:</label>
+                <select id="theme" class="cyber-select">
+                    <option value="cyberpunk">Cyberpunk</option>
+                    <option value="industrial">Industrial</option>
+                </select>
+            </div>
+        </div>
         <div class="upload-section">
-            <input type="file" id="imageInput" accept="image/*">
-            <button id="solveButton">Solve Equation</button>
+            <div id="dropZone" class="drop-zone">
+                <div class="input-methods">
+                    <button id="uploadButton" class="cyber-button secondary">
+                        <span class="icon">📁</span>
+                        <span class="button-text">Upload Image</span>
+                    </button>
+                </div>
+            </div>
+            <input type="file" id="imageInput" accept="image/*" class="cyber-file" style="display: none;">
         </div>
         <div class="preview-section">
-            <img id="imagePreview" style="display: none;">
+            <img id="imagePreview" class="preview-fade" style="display: none;">
         </div>
         <div class="result-section">
-            <div id="loading" style="display: none;">Solving...</div>
-            <div id="solution"></div>
+            <div id="loading" class="cyber-loading" style="display: none;">
+                <div class="loader"></div>
+                <span id="loadingText">Decoding...</span>
+            </div>
+            <div id="verificationSection" class="verification-section" style="display: none;">
+                <div class="verification-container">
+                    <h3 class="verification-title">Is this the correct equation?</h3>
+                    <div class="detected-equation"></div>
+                    <div class="verification-buttons">
+                        <button id="confirmEquation" class="cyber-button confirm">Yes, solve it</button>
+                        <button id="correctEquation" class="cyber-button edit">No, fix it</button>
+                    </div>
+                </div>
+                <div class="correction-container" style="display: none;">
+                    <h3 class="correction-title">Enter the correct equation:</h3>
+                    <div class="correction-input-container">
+                        <input type="text" id="equationInput" class="cyber-input" placeholder="Type the equation here...">
+                        <button id="submitCorrection" class="cyber-button confirm">Solve this instead</button>
+                    </div>
+                </div>
+            </div>
+            <div id="solution" class="cyber-solution"></div>
         </div>
     </div>
     <script src="script.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 </body>
 </html> 
