@@ -9,25 +9,9 @@
 <body>
     <div class="container">
         <h1>Math Equation Solver</h1>
-        <div class="theme-section">
-            <select id="theme" class="theme-select">
-                <option value="cyberpunk">Cyberpunk</option>
-                <option value="industrial">Industrial</option>
-            </select>
-        </div>
         <div class="upload-section">
             <input type="file" id="imageInput" accept="image/*">
             <button id="solveButton">Solve Equation</button>
-        </div>
-        <div class="verification-section" style="display: none;">
-            <h3>Is this the correct equation?</h3>
-            <div id="detectedEquation"></div>
-            <button id="confirmEquation">Yes, solve it</button>
-            <button id="correctEquation">No, let me fix it</button>
-            <div class="correction-input" style="display: none;">
-                <input type="text" id="equationInput" placeholder="Enter the correct equation">
-                <button id="submitCorrection">Submit correction</button>
-            </div>
         </div>
         <div class="preview-section">
             <img id="imagePreview" style="display: none;">
