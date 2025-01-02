@@ -368,33 +368,48 @@ async function verifyEquationImage(base64Image) {
 
 // Update the solution formatting
 function formatSolution(solutionText) {
-    // Nettoyer le texte
+    // Clean the text
     solutionText = solutionText.replace(/<[^>]*>/g, '');
     
     let formattedHtml = '<div class="solution-container">';
     
-    // Séparer les lignes
-    const lines = solutionText.split('\n').map(line => line.trim()).filter(line => line);
+    // Split into lines
+    const lines = solutionText.split('\n')
+        .map(line => line.trim())
+        .filter(line => line);
     
-    lines.forEach(line => {
+    lines.forEach((line, index) => {
         if (line.startsWith('Level:') || line.startsWith('Niveau:')) {
             formattedHtml += `<div class="difficulty-label">${line}</div>`;
         }
         else if (line.includes('→') || line.includes('∴')) {
-            // Séparer l'équation et l'explication
-            const [equation, explanation] = line.split('(').map(part => part.trim());
+            // Split equation and explanation
+            let [equation, explanation] = line.split('(').map(part => part.trim());
+            explanation = explanation ? explanation.replace(')', '') : '';
+            
             formattedHtml += `
                 <div class="step-container">
                     <div class="step-equation">${equation}</div>
-                    <div class="step-explanation">(${explanation || ''}</div>
+                    <div class="step-explanation">${explanation}</div>
                 </div>`;
         }
         else if (!line.startsWith('FORMAT:') && !line.startsWith('EXEMPLE:')) {
-            formattedHtml += `<div class="step-equation">${line}</div>`;
+            formattedHtml += `
+                <div class="step-container">
+                    <div class="step-equation">${line}</div>
+                </div>`;
         }
     });
     
-    formattedHtml += '</div>';
+    formattedHtml += `
+        <div class="solve-another-container">
+            <button id="solveAnother" class="cyber-button solve-another">
+                <span class="icon">🔄</span>
+                <span class="button-text">Solve Another Equation</span>
+            </button>
+        </div>
+    </div>`;
+    
     return formattedHtml;
 }
 
