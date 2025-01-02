@@ -21,15 +21,17 @@ body {
     padding: 20px;
     background-color: var(--cyber-dark);
     border: 2px solid var(--neon-blue);
-    border-radius: 10px;
+    border-radius: 12px;
     box-shadow: 0 0 20px rgba(0, 255, 249, 0.2);
+    position: relative;
 }
 
 .version-tag {
-    text-align: right;
+    position: absolute;
+    top: 10px;
+    right: 10px;
     color: var(--neon-blue);
     font-size: 0.8em;
-    margin-bottom: 20px;
 }
 
 h1 {
@@ -37,7 +39,7 @@ h1 {
     text-align: center;
     text-shadow: 0 0 10px var(--neon-blue);
     margin-bottom: 30px;
-    position: relative;
+    font-size: 2em;
 }
 
 h1::after {
@@ -51,8 +53,9 @@ h1::after {
 
 h2 {
     color: var(--neon-pink);
-    font-size: 1em;
+    font-size: 0.9em;
     margin-bottom: 10px;
+    text-transform: uppercase;
 }
 
 .interface-section, .theme-section {
@@ -71,6 +74,14 @@ h2 {
     color: var(--cyber-text);
     border-radius: 4px;
     font-family: 'Orbitron', sans-serif;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300fff9' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 1em;
+    padding-right: 30px;
 }
 
 .upload-section {
@@ -87,7 +98,7 @@ h2 {
 .upload-button {
     width: 100%;
     padding: 15px;
-    background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink));
+    background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
     border: none;
     border-radius: 4px;
     color: white;
@@ -95,6 +106,8 @@ h2 {
     font-size: 1em;
     cursor: pointer;
     transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .upload-button:hover {
@@ -125,8 +138,8 @@ h2 {
 
 /* Industrial theme */
 .theme-industrial {
-    --neon-blue: #ffd700;  /* Gold */
-    --neon-pink: #ff4500;  /* Orange-Red */
+    --neon-blue: #ffd700;
+    --neon-pink: #ff4500;
     --cyber-black: #232323;
     --cyber-dark: #2d2d2d;
     --cyber-text: #d0d0d0;
@@ -137,22 +150,11 @@ h2 {
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
 }
 
-.theme-industrial .upload-border {
+.theme-industrial .cyber-select {
     border-color: var(--neon-blue);
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffd700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
 }
 
 .theme-industrial .upload-button {
-    background: linear-gradient(45deg, var(--neon-blue), var(--neon-pink));
-}
-
-.theme-industrial .upload-button:hover {
-    box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
-}
-
-.theme-industrial .cyber-select {
-    border-color: var(--neon-blue);
-}
-
-.theme-industrial #solution {
-    border-color: var(--neon-pink);
+    background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
 }
