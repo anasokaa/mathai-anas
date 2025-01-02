@@ -3,18 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https://generativelanguage.googleapis.com; img-src 'self' data: blob: https:; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://generativelanguage.googleapis.com;">
     <title>MathAI Anas</title>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap">
     <link rel="stylesheet" href="styles.css">
-    <base href="/mathai-anas/">
 </head>
 <body>
     <div class="container">
-        <div class="version-tag">v1.9.0</div>
+        <div class="version-tag">v1.7.2</div>
         <div class="cyber-header">
             <h1>MathAI Anas</h1>
-            <div class="cyber-line"></div>
         </div>
         <div class="control-panel">
             <div class="language-select">
@@ -42,13 +39,14 @@
                 </div>
             </div>
             <input type="file" id="imageInput" accept="image/*" class="cyber-file" style="display: none;">
+            <button id="solveButton" class="cyber-button" disabled>Decode Equation</button>
         </div>
         <div class="preview-section">
-            <img id="imagePreview" class="preview-fade" style="display: none;">
+            <img id="imagePreview" style="display: none;">
         </div>
         <div class="result-section">
             <div id="loading" class="cyber-loading" style="display: none;">
-                <div class="loader"></div>
+                <span class="loader"></span>
                 <span id="loadingText">Decoding...</span>
             </div>
             <div id="verificationSection" class="verification-section" style="display: none;">
@@ -57,7 +55,7 @@
                     <div class="detected-equation"></div>
                     <div class="verification-buttons">
                         <button id="confirmEquation" class="cyber-button confirm">Yes, solve it</button>
-                        <button id="correctEquation" class="cyber-button edit">No, fix it</button>
+                        <button id="correctEquation" class="cyber-button edit">No, let me fix it</button>
                     </div>
                 </div>
                 <div class="correction-container" style="display: none;">
